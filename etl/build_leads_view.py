@@ -15,7 +15,7 @@ import json
 import os
 
 INCOMING_DIR = "_incoming"
-OUT_PATH = "site/leads_data.json"
+OUT_PATH = "docs/leads_data.json"
 
 CBD_SITE_CODE = "58995"   # per source README: CBD/58995 (a.k.a. sLocationCode L004)
 
