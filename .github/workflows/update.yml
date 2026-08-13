@@ -31,6 +31,13 @@ jobs:
           SOURCE_REPO_BRANCH: master
         run: python etl/fetch_source_data.py
 
+      - name: DEBUG print fetched data
+        run: |
+          echo "----- data.json -----"
+          cat _incoming/data.json
+          echo "----- history.json -----"
+          head -c 3000 _incoming/history.json
+
       - name: Build leads-performance view
         run: python etl/build_leads_view.py
 
