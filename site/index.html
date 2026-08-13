@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CBD Leads Performance Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --ino-red: #B80006;
+    --ino-black: #0A0203;
+    --ino-darkgrey: #323232;
+    --ino-lightgrey: #A7A8AA;
+    --good: #1a7f37;
+    --bad: #b80006;
+    --neutral: #6b6b6b;
+  }
+  body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f5f5f5; color: var(--ino-black); }
+  header { background: var(--ino-red); color: #fff; padding: 24px 32px; }
+  header h1 { margin: 0; font-size: 22px; }
+  header p { margin: 4px 0 0; opacity: 0.9; font-size: 14px; }
+  main { padding: 24px 32px; max-width: 1100px; margin: 0 auto; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .card .label { font-size: 12px; color: var(--ino-darkgrey); text-transform: uppercase; letter-spacing: 0.03em; }
+  .card .value { font-size: 28px; font-weight: bold; margin: 4px 0; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: #fff; }
+  .badge.good { background: var(--good); }
+  .badge.bad { background: var(--bad); }
+  .badge.neutral { background: var(--neutral); }
+  .flags { background: #fff3f3; border: 1px solid var(--ino-red); border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; }
+  .flags h3 { margin: 0 0 8px; color: var(--ino-red); font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; }
+  th { background: var(--ino-darkgrey); color: #fff; }
+  .note { font-size: 12px; color: var(--ino-darkgrey); font-style: italic; margin-top: 8px; }
+  .error { background: #fff3f3; border: 1px solid var(--ino-red); padding: 16px; border-radius: 8px; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid #ddd; }
+  .tab { padding: 10px 18px; cursor: pointer; font-size: 14px; font-weight: bold; color: var(--ino-darkgrey);
+         border: none; background: none; border-bottom: 3px solid transparent; }
+  .tab.active { color: var(--ino-red); border-bottom-color: var(--ino-red); }
+  .tab:hover { color: var(--ino-red); }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="site-title">Leads Performance Dashboard</h1>
+  <p>Sourced from the sitelink-analytics-dashboard pipeline · SiteLink Consolidated Lead Funnel &amp; Move-Ins/Move-Outs</p>
+</header>
+<main>
+  <div id="tabs" class="tabs"></div>
+  <div id="content">Loading…</div>
+</main>
+<script>
+let DATA = null;
+let ACTIVE_SITE = null;
+
+function badgeClass(label) {
+  if (!label) return 'neutral';
+  const bad = ['Concerning', 'Below Target'];
+  return bad.some(b => label.startsWith(b)) ? 'bad' : 'good';
+}
+
+function renderTabs() {
+  const tabsEl = document.getElementById('tabs');
+  const codes = Object.keys(DATA.sites);
+  tabsEl.innerHTML = codes.map(code => {
+    const site = DATA.sites[code];
+    return `<button class="tab ${code === ACTIVE_SITE ? 'active' : ''}" data-code="${code}">${site.name}</button>`;
+  }).join('');
+  tabsEl.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      ACTIVE_SITE = btn.dataset.code;
+      renderTabs();
+      renderSite();
+    });
+  });
+}
+
+function renderSite() {
+  const el = document.getElementById('content');
+  const site = DATA.sites[ACTIVE_SITE];
+  document.getElementById('site-title').textContent = site.name + ' — Leads Performance Dashboard';
+
+  const cur = site.current_month || {};
+  const cards = [
+    ['Genuine Enquiries', cur.genuine_enquiries, cur.bands && cur.bands.genuine_enquiries],
+    ['Conversion Rate', cur.conversion_rate != null ? (cur.conversion_rate * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.conversion_rate],
+    ['Move-ins', cur.move_ins, cur.bands && cur.bands.move_ins],
+    ['Occupancy % (sqm)', cur.occupancy_sqm_pct != null ? (cur.occupancy_sqm_pct * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.occupancy_sqm],
+  ];
+
+  let html = '<div class="cards">' + cards.map(([label, value, band]) => `
+    <div class="card">
+      <div class="label">${label}</div>
+      <div class="value">${value != null ? value : '—'}</div>
+      ${band ? `<span class="badge ${badgeClass(band)}">${band}</span>` : ''}
+    </div>
+  `).join('') + '</div>';
+
+  if (cur.diagnostic_flags && cur.diagnostic_flags.length) {
+    html += '<div class="flags"><h3>⚠ Diagnostic flags</h3><ul>' +
+      cur.diagnostic_flags.map(f => `<li>${f}</li>`).join('') + '</ul></div>';
+  }
+
+  const hist = site.monthly_history || [];
+  if (hist.length) {
+    html += '<table><thead><tr><th>Month</th><th>Enquiries</th><th>Conversion Rate</th><th>Move-ins</th><th>Occupancy % (sqm)</th></tr></thead><tbody>';
+    hist.forEach(m => {
+      html += `<tr>
+        <td>${m.month || ''}</td>
+        <td>${m.genuine_enquiries != null ? m.genuine_enquiries : '—'}</td>
+        <td>${m.conversion_rate != null ? (m.conversion_rate * 100).toFixed(1) + '%' : '—'}</td>
+        <td>${m.move_ins != null ? m.move_ins : '—'}</td>
+        <td>${m.occupancy_sqm_pct != null ? (m.occupancy_sqm_pct * 100).toFixed(1) + '%' : '—'}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  } else {
+    html += '<p class="note">No monthly history yet - this fills in as the daily pipeline accumulates data, ' +
+      'or once per-site historical backfill is confirmed possible (see README).</p>';
+  }
+
+  el.innerHTML = html;
+}
+
+async function load() {
+  const el = document.getElementById('content');
+  try {
+    const res = await fetch('leads_data.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    DATA = await res.json();
+  } catch (e) {
+    el.innerHTML = '<div class="error">Could not load leads_data.json: ' + e.message +
+      '. This file is rebuilt daily by the GitHub Actions workflow - if it is missing, ' +
+      'the workflow may not have run yet, or SOURCE_REPO_PAT needs setting.</div>';
+    return;
+  }
+  ACTIVE_SITE = DATA.default_site && DATA.sites[DATA.default_site] ? DATA.default_site : Object.keys(DATA.sites)[0];
+  renderTabs();
+  renderSite();
+}
+load();
+</script>
+</body>
+</html>

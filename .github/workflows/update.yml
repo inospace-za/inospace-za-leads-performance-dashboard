@@ -1,0 +1,42 @@
+name: Update leads dashboard
+
+on:
+  schedule:
+    # Offset ~1 hour after the source repo's own daily cron so its data.json commit
+    # has landed before we read it. Adjust to match the source repo's actual schedule.
+    - cron: "0 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r etl/requirements.txt
+
+      - name: Fetch source repo data
+        env:
+          SOURCE_REPO_PAT: ${{ secrets.SOURCE_REPO_PAT }}
+        run: python etl/fetch_source_data.py
+
+      - name: Build leads-performance view
+        run: python etl/build_leads_view.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add site/leads_data.json
+          git diff --staged --quiet || git commit -m "Update leads_data.json [skip ci]"
+          git push

@@ -1,0 +1,5 @@
+# fetch_source_data.py and build_leads_view.py use only the Python standard library
+# (urllib, json, base64, os) - no third-party dependencies yet.
+# Kept as a placeholder file so `pip install -r etl/requirements.txt` matches the
+# pattern in the source repo, and so adding a dependency later (e.g. requests) is a
+# one-line change here rather than a new file.
