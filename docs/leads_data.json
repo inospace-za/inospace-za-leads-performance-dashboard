@@ -1,0 +1,261 @@
+{
+  "generated_note": "Built by leads-performance-dashboard/etl/build_leads_view.py",
+  "sites": {
+    "56788": {
+      "name": "Maitland",
+      "site_code": "56788",
+      "current_month": {
+        "genuine_enquiries": 3,
+        "conversions": 2,
+        "conversion_rate": 0.667,
+        "move_ins": 2,
+        "move_outs": 0,
+        "net_units_absorbed": 2,
+        "occupancy_sqm_pct": 0.5720000000000001,
+        "occupancy_units_pct": 0.462,
+        "bands": {
+          "genuine_enquiries": "Concerning - insufficient demand generation",
+          "conversion_rate": "Excellent",
+          "move_ins": "Concerning",
+          "occupancy_sqm": "Exceptional"
+        },
+        "diagnostic_flags": []
+      },
+      "monthly_history": [
+        {
+          "month": "2026-07",
+          "genuine_enquiries": null,
+          "conversions": null,
+          "move_ins": null,
+          "move_outs": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": 0.444,
+          "bands": {
+            "genuine_enquiries": null,
+            "conversion_rate": null,
+            "move_ins": null,
+            "occupancy_sqm": null
+          }
+        },
+        {
+          "month": "2026-08",
+          "genuine_enquiries": null,
+          "conversions": null,
+          "move_ins": null,
+          "move_outs": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": 0.462,
+          "bands": {
+            "genuine_enquiries": null,
+            "conversion_rate": null,
+            "move_ins": null,
+            "occupancy_sqm": null
+          }
+        }
+      ]
+    },
+    "58700": {
+      "name": "Salt River",
+      "site_code": "58700",
+      "current_month": {
+        "genuine_enquiries": 3,
+        "conversions": 1,
+        "conversion_rate": 0.33299999999999996,
+        "move_ins": 1,
+        "move_outs": 1,
+        "net_units_absorbed": 0,
+        "occupancy_sqm_pct": 0.511,
+        "occupancy_units_pct": 0.382,
+        "bands": {
+          "genuine_enquiries": "Concerning - insufficient demand generation",
+          "conversion_rate": "Good",
+          "move_ins": "Concerning",
+          "occupancy_sqm": "Exceptional"
+        },
+        "diagnostic_flags": []
+      },
+      "monthly_history": [
+        {
+          "month": "2026-07",
+          "genuine_enquiries": null,
+          "conversions": null,
+          "move_ins": null,
+          "move_outs": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": 0.34299999999999997,
+          "bands": {
+            "genuine_enquiries": null,
+            "conversion_rate": null,
+            "move_ins": null,
+            "occupancy_sqm": null
+          }
+        },
+        {
+          "month": "2026-08",
+          "genuine_enquiries": null,
+          "conversions": null,
+          "move_ins": null,
+          "move_outs": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": 0.382,
+          "bands": {
+            "genuine_enquiries": null,
+            "conversion_rate": null,
+            "move_ins": null,
+            "occupancy_sqm": null
+          }
+        }
+      ]
+    },
+    "58995": {
+      "name": "CBD - The Exchange",
+      "site_code": "58995",
+      "current_month": {
+        "genuine_enquiries": 22,
+        "conversions": 8,
+        "conversion_rate": 0.364,
+        "move_ins": 8,
+        "move_outs": 0,
+        "net_units_absorbed": 8,
+        "occupancy_sqm_pct": 0.036000000000000004,
+        "occupancy_units_pct": 0.032,
+        "bands": {
+          "genuine_enquiries": "Concerning - insufficient demand generation",
+          "conversion_rate": "Very Good",
+          "move_ins": "Concerning",
+          "occupancy_sqm": "Concerning"
+        },
+        "diagnostic_flags": [
+          "Insufficient demand generation"
+        ]
+      },
+      "monthly_history": [
+        {
+          "month": "2026-07",
+          "genuine_enquiries": null,
+          "conversions": null,
+          "move_ins": null,
+          "move_outs": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": 0.0,
+          "bands": {
+            "genuine_enquiries": null,
+            "conversion_rate": null,
+            "move_ins": null,
+            "occupancy_sqm": null
+          }
+        },
+        {
+          "month": "2026-08",
+          "genuine_enquiries": null,
+          "conversions": null,
+          "move_ins": null,
+          "move_outs": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": 0.032,
+          "bands": {
+            "genuine_enquiries": null,
+            "conversion_rate": null,
+            "move_ins": null,
+            "occupancy_sqm": null
+          }
+        }
+      ]
+    }
+  },
+  "default_site": "58995",
+  "bands_reference": {
+    "genuine_enquiries": [
+      [
+        0,
+        "Concerning - insufficient demand generation"
+      ],
+      [
+        40,
+        "Acceptable - needs improvement"
+      ],
+      [
+        60,
+        "Good"
+      ],
+      [
+        80,
+        "Very Good"
+      ]
+    ],
+    "conversion_rate": [
+      [
+        0.0,
+        "Concerning"
+      ],
+      [
+        0.2,
+        "Below Target"
+      ],
+      [
+        0.25,
+        "Acceptable"
+      ],
+      [
+        0.3,
+        "Good"
+      ],
+      [
+        0.35,
+        "Very Good"
+      ],
+      [
+        0.4,
+        "Excellent"
+      ]
+    ],
+    "move_ins": [
+      [
+        0,
+        "Concerning"
+      ],
+      [
+        10,
+        "Reasonable"
+      ],
+      [
+        15,
+        "Good"
+      ],
+      [
+        20,
+        "Very Good"
+      ]
+    ],
+    "occupancy_sqm": [
+      [
+        0.0,
+        "Concerning"
+      ],
+      [
+        0.2,
+        "Reasonable"
+      ],
+      [
+        0.3,
+        "Good"
+      ],
+      [
+        0.4,
+        "Very Good"
+      ],
+      [
+        0.5,
+        "Exceptional"
+      ]
+    ]
+  },
+  "diagnostic_thresholds": {
+    "low_demand_min": 20,
+    "low_demand_max": 30,
+    "price_issue_enq_min": 70,
+    "price_issue_enq_max": 90,
+    "price_issue_moveins_max": 15
+  },
+  "bands_note": "Same KPI bands apply to every site initially - split per site later if needed."
+}
