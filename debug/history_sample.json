@@ -1,0 +1,558 @@
+[
+  {
+    "date": "2026-07-02",
+    "portfolio_occ_pct": 36.3,
+    "portfolio_units_occupied": 118.0,
+    "by_site_occ_pct": {
+      "58995": 0.0,
+      "58700": 22.5,
+      "56788": 86.4
+    },
+    "leads_placed": 6,
+    "net_moves": 4.0
+  },
+  {
+    "date": "2026-07-03",
+    "portfolio_occ_pct": 36.3,
+    "portfolio_units_occupied": 118.0,
+    "by_site_occ_pct": {
+      "56788": 86.4,
+      "58700": 22.5,
+      "58995": 0.0
+    },
+    "leads_placed": 8,
+    "net_moves": 4.0
+  },
+  {
+    "date": "2026-07-05",
+    "portfolio_occ_pct": 36.3,
+    "portfolio_units_occupied": 118.0,
+    "by_site_occ_pct": {
+      "56788": 86.4,
+      "58700": 22.5,
+      "58995": 0.0
+    },
+    "leads_placed": 12,
+    "net_moves": 4.0
+  },
+  {
+    "date": "2026-07-06",
+    "portfolio_occ_pct": 36.3,
+    "portfolio_units_occupied": 118.0,
+    "by_site_occ_pct": {
+      "56788": 86.4,
+      "58700": 22.5,
+      "58995": 0.0
+    },
+    "leads_placed": 12,
+    "net_moves": 4.0
+  },
+  {
+    "date": "2026-07-07",
+    "portfolio_occ_pct": 36.3,
+    "portfolio_units_occupied": 118.0,
+    "by_site_occ_pct": {
+      "56788": 86.4,
+      "58700": 22.5,
+      "58995": 0.0
+    },
+    "leads_placed": 24,
+    "leases_signed": 4,
+    "net_moves": 4.0
+  },
+  {
+    "date": "2026-07-08",
+    "portfolio_occ_pct": 36.6,
+    "portfolio_units_occupied": 119.0,
+    "by_site_occ_pct": {
+      "56788": 86.4,
+      "58700": 23.5,
+      "58995": 0.0
+    },
+    "leads_placed": 33,
+    "leases_signed": 5,
+    "net_moves": 5.0
+  },
+  {
+    "date": "2026-07-09",
+    "portfolio_occ_pct": 30.6,
+    "portfolio_units_occupied": 153.0,
+    "by_site_occ_pct": {
+      "56788": 88.2,
+      "58700": 24.5,
+      "58859": 83.8,
+      "58995": 0.0
+    },
+    "leads_placed": 38,
+    "leases_signed": 8,
+    "net_moves": 8.0
+  },
+  {
+    "date": "2026-07-10",
+    "portfolio_occ_pct": 26.3,
+    "portfolio_units_occupied": 122.0,
+    "by_site_occ_pct": {
+      "56788": 88.2,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 40,
+    "leases_signed": 8,
+    "net_moves": 8.0
+  },
+  {
+    "date": "2026-07-11",
+    "portfolio_occ_pct": 26.3,
+    "portfolio_units_occupied": 122.0,
+    "by_site_occ_pct": {
+      "56788": 88.2,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 41,
+    "leases_signed": 8,
+    "net_moves": 8.0
+  },
+  {
+    "date": "2026-07-12",
+    "portfolio_occ_pct": 26.3,
+    "portfolio_units_occupied": 122.0,
+    "by_site_occ_pct": {
+      "56788": 88.2,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 41,
+    "leases_signed": 8,
+    "net_moves": 8.0
+  },
+  {
+    "date": "2026-07-13",
+    "portfolio_occ_pct": 26.3,
+    "portfolio_units_occupied": 122.0,
+    "by_site_occ_pct": {
+      "56788": 88.2,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 41,
+    "leases_signed": 8,
+    "net_moves": 8.0
+  },
+  {
+    "date": "2026-07-14",
+    "portfolio_occ_pct": 26.8,
+    "portfolio_units_occupied": 124.0,
+    "by_site_occ_pct": {
+      "56788": 90.0,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 48,
+    "leases_signed": 10,
+    "net_moves": 10.0
+  },
+  {
+    "date": "2026-07-15",
+    "portfolio_occ_pct": 26.8,
+    "portfolio_units_occupied": 124.0,
+    "by_site_occ_pct": {
+      "56788": 90.0,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 50,
+    "leases_signed": 10,
+    "net_moves": 10.0
+  },
+  {
+    "date": "2026-07-16",
+    "portfolio_occ_pct": 26.8,
+    "portfolio_units_occupied": 124.0,
+    "by_site_occ_pct": {
+      "56788": 90.0,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 53,
+    "leases_signed": 10,
+    "net_moves": 10.0
+  },
+  {
+    "date": "2026-07-17",
+    "portfolio_occ_pct": 27.2,
+    "portfolio_units_occupied": 126.0,
+    "by_site_occ_pct": {
+      "56788": 91.8,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 57,
+    "leases_signed": 12,
+    "net_moves": 12.0
+  },
+  {
+    "date": "2026-07-18",
+    "portfolio_occ_pct": 27.2,
+    "portfolio_units_occupied": 126.0,
+    "by_site_occ_pct": {
+      "56788": 91.8,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 61,
+    "leases_signed": 12,
+    "net_moves": 12.0
+  },
+  {
+    "date": "2026-07-19",
+    "portfolio_occ_pct": 27.2,
+    "portfolio_units_occupied": 126.0,
+    "by_site_occ_pct": {
+      "56788": 91.8,
+      "58700": 24.5,
+      "58995": 0.0
+    },
+    "leads_placed": 61,
+    "leases_signed": 12,
+    "net_moves": 12.0
+  },
+  {
+    "date": "2026-07-20",
+    "portfolio_occ_pct": 27.4,
+    "portfolio_units_occupied": 127.0,
+    "by_site_occ_pct": {
+      "56788": 91.8,
+      "58700": 25.5,
+      "58995": 0.0
+    },
+    "leads_placed": 62,
+    "leases_signed": 13,
+    "net_moves": 13.0
+  },
+  {
+    "date": "2026-07-21",
+    "portfolio_occ_pct": 27.4,
+    "portfolio_units_occupied": 127.0,
+    "by_site_occ_pct": {
+      "56788": 91.8,
+      "58700": 25.5,
+      "58995": 0.0
+    },
+    "leads_placed": 65,
+    "leases_signed": 13,
+    "net_moves": 13.0
+  },
+  {
+    "date": "2026-07-22",
+    "portfolio_occ_pct": 27.9,
+    "portfolio_units_occupied": 129.0,
+    "by_site_occ_pct": {
+      "56788": 93.6,
+      "58700": 25.5,
+      "58995": 0.0
+    },
+    "leads_placed": 82,
+    "leases_signed": 15,
+    "net_moves": 15.0
+  },
+  {
+    "date": "2026-07-23",
+    "portfolio_occ_pct": 28.1,
+    "portfolio_units_occupied": 130.0,
+    "by_site_occ_pct": {
+      "56788": 93.6,
+      "58700": 26.5,
+      "58995": 0.0
+    },
+    "leads_placed": 89,
+    "leases_signed": 16,
+    "net_moves": 16.0
+  },
+  {
+    "date": "2026-07-24",
+    "portfolio_occ_pct": 28.5,
+    "portfolio_units_occupied": 132.0,
+    "by_site_occ_pct": {
+      "56788": 93.6,
+      "58700": 28.4,
+      "58995": 0.0
+    },
+    "leads_placed": 93,
+    "leases_signed": 18,
+    "net_moves": 18.0
+  },
+  {
+    "date": "2026-07-25",
+    "portfolio_occ_pct": 28.9,
+    "portfolio_units_occupied": 134.0,
+    "by_site_occ_pct": {
+      "56788": 93.6,
+      "58700": 30.4,
+      "58995": 0.0
+    },
+    "leads_placed": 100,
+    "leases_signed": 20,
+    "net_moves": 20.0
+  },
+  {
+    "date": "2026-07-26",
+    "portfolio_occ_pct": 29.2,
+    "portfolio_units_occupied": 135.0,
+    "by_site_occ_pct": {
+      "56788": 93.6,
+      "58700": 31.4,
+      "58995": 0.0
+    },
+    "leads_placed": 102,
+    "leases_signed": 21,
+    "net_moves": 21.0
+  },
+  {
+    "date": "2026-07-27",
+    "portfolio_occ_pct": 29.2,
+    "portfolio_units_occupied": 135.0,
+    "by_site_occ_pct": {
+      "56788": 93.6,
+      "58700": 31.4,
+      "58995": 0.0
+    },
+    "leads_placed": 102,
+    "leases_signed": 21,
+    "net_moves": 21.0
+  },
+  {
+    "date": "2026-07-28",
+    "portfolio_occ_pct": 29.2,
+    "portfolio_units_occupied": 135.0,
+    "by_site_occ_pct": {
+      "56788": 93.6,
+      "58700": 31.4,
+      "58995": 0.0
+    },
+    "leads_placed": 113,
+    "leases_signed": 21,
+    "net_moves": 21.0
+  },
+  {
+    "date": "2026-07-29",
+    "portfolio_occ_pct": 29.8,
+    "portfolio_units_occupied": 138.0,
+    "by_site_occ_pct": {
+      "56788": 94.5,
+      "58700": 33.3,
+      "58995": 0.0
+    },
+    "leads_placed": 119,
+    "leases_signed": 24,
+    "net_moves": 24.0
+  },
+  {
+    "date": "2026-07-30",
+    "portfolio_occ_pct": 23.5,
+    "portfolio_units_occupied": 138.0,
+    "by_site_occ_pct": {
+      "56788": 44.4,
+      "58700": 33.3,
+      "58995": 0.0
+    },
+    "leads_placed": 123,
+    "leases_signed": 25,
+    "net_moves": 24.0
+  },
+  {
+    "date": "2026-07-31",
+    "portfolio_occ_pct": 23.7,
+    "portfolio_units_occupied": 139.0,
+    "by_site_occ_pct": {
+      "56788": 44.4,
+      "58700": 34.3,
+      "58995": 0.0
+    },
+    "leads_placed": 127,
+    "leases_signed": 28,
+    "net_moves": 25.0
+  },
+  {
+    "date": "2026-08-01",
+    "portfolio_occ_pct": 25.0,
+    "portfolio_units_occupied": 147.0,
+    "by_site_occ_pct": {
+      "56788": 45.7,
+      "58700": 39.2,
+      "58995": 0.0
+    },
+    "leads_placed": 133,
+    "leases_signed": 36,
+    "net_moves": 33.0
+  },
+  {
+    "date": "2026-08-02",
+    "portfolio_occ_pct": 25.6,
+    "portfolio_units_occupied": 150.0,
+    "by_site_occ_pct": {
+      "56788": 45.7,
+      "58700": 40.2,
+      "58995": 0.8
+    },
+    "leads_placed": 1,
+    "leases_signed": 3,
+    "net_moves": 3.0
+  },
+  {
+    "date": "2026-08-03",
+    "portfolio_occ_pct": 25.6,
+    "portfolio_units_occupied": 150.0,
+    "by_site_occ_pct": {
+      "56788": 45.7,
+      "58700": 40.2,
+      "58995": 0.8
+    },
+    "leads_placed": 2,
+    "leases_signed": 3,
+    "net_moves": 3.0
+  },
+  {
+    "date": "2026-08-04",
+    "portfolio_occ_pct": 25.0,
+    "portfolio_units_occupied": 147.0,
+    "by_site_occ_pct": {
+      "56788": 45.3,
+      "58700": 39.2,
+      "58995": 0.4
+    },
+    "leads_placed": 3,
+    "leases_signed": 2,
+    "net_moves": 1.0
+  },
+  {
+    "date": "2026-08-05",
+    "portfolio_occ_pct": 25.4,
+    "portfolio_units_occupied": 149.0,
+    "by_site_occ_pct": {
+      "56788": 45.3,
+      "58700": 39.2,
+      "58995": 1.2
+    },
+    "leads_placed": 5,
+    "leases_signed": 4,
+    "net_moves": 3.0
+  },
+  {
+    "date": "2026-08-06",
+    "portfolio_occ_pct": 25.6,
+    "portfolio_units_occupied": 150.0,
+    "by_site_occ_pct": {
+      "56788": 45.3,
+      "58700": 39.2,
+      "58995": 1.6
+    },
+    "leads_placed": 8,
+    "leases_signed": 5,
+    "net_moves": 4.0
+  },
+  {
+    "date": "2026-08-07",
+    "portfolio_occ_pct": 25.9,
+    "portfolio_units_occupied": 152.0,
+    "by_site_occ_pct": {
+      "56788": 46.2,
+      "58700": 39.2,
+      "58995": 1.6
+    },
+    "leads_placed": 10,
+    "leases_signed": 7,
+    "net_moves": 6.0
+  },
+  {
+    "date": "2026-08-08",
+    "portfolio_occ_pct": 25.9,
+    "portfolio_units_occupied": 152.0,
+    "by_site_occ_pct": {
+      "56788": 46.2,
+      "58700": 39.2,
+      "58995": 1.6
+    },
+    "leads_placed": 13,
+    "leases_signed": 7,
+    "net_moves": 6.0
+  },
+  {
+    "date": "2026-08-09",
+    "portfolio_occ_pct": 25.9,
+    "portfolio_units_occupied": 152.0,
+    "by_site_occ_pct": {
+      "56788": 46.2,
+      "58700": 39.2,
+      "58995": 1.6
+    },
+    "leads_placed": 14,
+    "leases_signed": 7,
+    "net_moves": 6.0
+  },
+  {
+    "date": "2026-08-10",
+    "portfolio_occ_pct": 25.9,
+    "portfolio_units_occupied": 152.0,
+    "by_site_occ_pct": {
+      "56788": 46.2,
+      "58700": 39.2,
+      "58995": 1.6
+    },
+    "leads_placed": 15,
+    "leases_signed": 7,
+    "net_moves": 6.0
+  },
+  {
+    "date": "2026-08-11",
+    "portfolio_occ_pct": 25.9,
+    "portfolio_units_occupied": 152.0,
+    "by_site_occ_pct": {
+      "56788": 46.2,
+      "58700": 39.2,
+      "58995": 1.6
+    },
+    "leads_placed": 16,
+    "leases_signed": 7,
+    "net_moves": 6.0
+  },
+  {
+    "date": "2026-08-12",
+    "portfolio_occ_pct": 26.1,
+    "portfolio_units_occupied": 153.0,
+    "by_site_occ_pct": {
+      "56788": 46.2,
+      "58700": 39.2,
+      "58995": 2.0
+    },
+    "leads_placed": 25,
+    "leases_signed": 8,
+    "net_moves": 7.0
+  },
+  {
+    "date": "2026-08-13",
+    "portfolio_occ_pct": 26.2,
+    "portfolio_units_occupied": 154.0,
+    "by_site_occ_pct": {
+      "56788": 46.2,
+      "58700": 38.2,
+      "58995": 2.8
+    },
+    "leads_placed": 25,
+    "leases_signed": 10,
+    "net_moves": 9.0
+  },
+  {
+    "date": "2026-08-14",
+    "portfolio_occ_pct": 26.4,
+    "portfolio_units_occupied": 155.0,
+    "by_site_occ_pct": {
+      "56788": 46.2,
+      "58700": 38.2,
+      "58995": 3.2
+    },
+    "leads_placed": 28,
+    "leases_signed": 11,
+    "net_moves": 10.0
+  }
+]
