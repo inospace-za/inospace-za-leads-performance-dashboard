@@ -3,10 +3,17 @@ Transform _incoming/data.json + _incoming/history.json (fetched from the source 
 into site/leads_data.json: a CBD-only, leads-performance-focused view scored against
 agreed KPI bands.
 
-*** SCHEMA NOT YET CONFIRMED ***
-Every place marked TODO reads a *guessed* field name based on the source repo's README
-description, not a real sample file. Send a real data.json/history.json and these will
-get corrected in one pass - the band/scoring logic below does not need to change.
+Schema confirmed against a real data.json/history.json sample (2026-08-14):
+  data["by_site"][site_id]["leads"]        -> placed_total, converted_to_lease, conversion_pct (0-100)
+  data["by_site"][site_id]["moveins"/"moveouts"/"net_moves"]
+  data["by_site"][site_id]["occ_pct_units"/"occ_pct_area"]  -> percentages 0-100, NOT fractions
+  data["sites"]                             -> list of {id, name, code, city} (metadata only)
+  history.json                              -> top-level list of daily snapshots:
+    {date, portfolio_occ_pct, portfolio_units_occupied, by_site_occ_pct: {site_id: pct},
+     leads_placed, leases_signed, net_moves}
+  Per-site history is ONLY reliable for occupancy % (by_site_occ_pct, unit-based).
+  leads_placed/leases_signed/net_moves in history.json are portfolio-blended, not
+  split by site - so per-site historical leads/move-ins are not available yet.
 
 Usage:
     python etl/build_leads_view.py
@@ -17,10 +24,9 @@ import os
 INCOMING_DIR = "_incoming"
 OUT_PATH = "docs/leads_data.json"
 
-CBD_SITE_CODE = "58995"   # per source README: CBD/58995 (a.k.a. sLocationCode L004)
+CBD_SITE_CODE = "58995"  # site id for CBD / The Exchange (sLocationCode L004)
 
-# All sites the source pipeline tracks (per its README KNOWN_SITES). Same KPI bands
-# apply to every site initially - split thresholds per site later if needed.
+# All sites the source pipeline tracks, keyed by numeric site id (matches data["by_site"] keys).
 KNOWN_SITES = {
     "56788": "Maitland",
     "58700": "Salt River",
@@ -68,7 +74,6 @@ DIAGNOSTIC_THRESHOLDS = {
     "price_issue_moveins_max": 15,
 }
 
-
 def band_label(value, band_key):
     if value is None:
         return None
@@ -80,7 +85,6 @@ def band_label(value, band_key):
         else:
             break
     return label
-
 
 def diagnostic_flags(genuine_enquiries, move_ins):
     flags = []
@@ -97,7 +101,6 @@ def diagnostic_flags(genuine_enquiries, move_ins):
         flags.append("Possible price / product / sales issue")
     return flags
 
-
 def load_incoming():
     with open(os.path.join(INCOMING_DIR, "data.json")) as f:
         data = json.load(f)
@@ -105,43 +108,39 @@ def load_incoming():
         history = json.load(f)
     return data, history
 
-
 def extract_site_current_month(data, site_code):
     """
-    TODO: confirm real field names. Expected (per source README) to come from the
-    Consolidated Lead Funnel (month-to-date) and Move-Ins & Move-Outs (month-to-date)
-    reports, filtered/grouped to the given site.
-
-    Guessed shape - CORRECT ONCE A REAL data.json IS AVAILABLE:
-        data["sites"][site_code]["lead_funnel"]["enquiries"]
-        data["sites"][site_code]["lead_funnel"]["conversions"]
-        data["sites"][site_code]["moves"]["move_ins"]
-        data["sites"][site_code]["moves"]["move_outs"]
-        data["sites"][site_code]["occupancy"]["occupied_sqm"]
-        data["sites"][site_code]["occupancy"]["total_sqm"]
-        data["sites"][site_code]["occupancy"]["occupied_units"]
-        data["sites"][site_code]["occupancy"]["total_units"]
+    Real shape (confirmed 2026-08-14 sample):
+        data["by_site"][site_code]["leads"]["placed_total"]
+        data["by_site"][site_code]["leads"]["converted_to_lease"]
+        data["by_site"][site_code]["leads"]["conversion_pct"]   # 0-100
+        data["by_site"][site_code]["moveins"]
+        data["by_site"][site_code]["moveouts"]
+        data["by_site"][site_code]["net_moves"]
+        data["by_site"][site_code]["occ_pct_units"]             # 0-100
+        data["by_site"][site_code]["occ_pct_area"]               # 0-100
     """
-    site = data.get("sites", {}).get(site_code, {})  # TODO confirm key path
-    lead_funnel = site.get("lead_funnel", {})
-    moves = site.get("moves", {})
-    occ = site.get("occupancy", {})
+    site = data.get("by_site", {}).get(site_code, {})
+    leads = site.get("leads", {})
 
-    enquiries = lead_funnel.get("enquiries")      # TODO confirm field name
-    conversions = lead_funnel.get("conversions")  # TODO confirm field name
-    move_ins = moves.get("move_ins")              # TODO confirm field name
-    move_outs = moves.get("move_outs")            # TODO confirm field name
-    occupied_sqm = occ.get("occupied_sqm")        # TODO confirm field name
-    total_sqm = occ.get("total_sqm")              # TODO confirm field name
-    occupied_units = occ.get("occupied_units")    # TODO confirm field name
-    total_units = occ.get("total_units")           # TODO confirm field name
+    enquiries = leads.get("placed_total")
+    conversions = leads.get("converted_to_lease")
+    move_ins = site.get("moveins")
+    move_outs = site.get("moveouts")
+    net_moves = site.get("net_moves")
 
-    conversion_rate = (
-        conversions / enquiries if enquiries and conversions is not None else None
-    )
-    occupancy_sqm_pct = occupied_sqm / total_sqm if occupied_sqm is not None and total_sqm else None
-    occupancy_units_pct = (
-        occupied_units / total_units if occupied_units is not None and total_units else None
+    conversion_pct = leads.get("conversion_pct")
+    occ_pct_units = site.get("occ_pct_units")
+    occ_pct_area = site.get("occ_pct_area")
+
+    conversion_rate = (conversion_pct / 100) if conversion_pct is not None else None
+    occupancy_sqm_pct = (occ_pct_area / 100) if occ_pct_area is not None else None
+    occupancy_units_pct = (occ_pct_units / 100) if occ_pct_units is not None else None
+
+    net_units_absorbed = (
+        net_moves if net_moves is not None
+        else (move_ins - move_outs) if move_ins is not None and move_outs is not None
+        else None
     )
 
     return {
@@ -150,29 +149,42 @@ def extract_site_current_month(data, site_code):
         "conversion_rate": conversion_rate,
         "move_ins": move_ins,
         "move_outs": move_outs,
-        "net_units_absorbed": (move_ins - move_outs) if move_ins is not None and move_outs is not None else None,
+        "net_units_absorbed": net_units_absorbed,
         "occupancy_sqm_pct": occupancy_sqm_pct,
         "occupancy_units_pct": occupancy_units_pct,
     }
 
-
 def extract_site_monthly_history(history, site_code):
     """
-    TODO: confirm whether history.json keeps genuinely per-site leads history, or
-    only portfolio-blended figures (source README flags this exact limitation on
-    its own Lead Velocity panel). Occupied History / Move-Ins & Move-Outs ARE
-    expected to be per-site and reliable; leads month-over-month per site may only
-    be as long as this pipeline has been running.
+    history.json is a top-level list of daily snapshots:
+        {date, portfolio_occ_pct, portfolio_units_occupied,
+         by_site_occ_pct: {site_id: pct}, leads_placed, leases_signed, net_moves}
 
-    Returns a list of {month, genuine_enquiries, conversions, move_ins, move_outs,
-    occupancy_sqm_pct, occupancy_units_pct} dicts, oldest first.
+    Confirmed limitation: leads_placed / leases_signed / net_moves are
+    portfolio-blended (not split by site). Only by_site_occ_pct is reliably
+    per-site, and it matches occ_pct_units (unit-based occupancy), not area.
+
+    Buckets by month, keeping the last snapshot seen per month (oldest first).
+    genuine_enquiries / conversions / move_ins / move_outs / occupancy_sqm_pct
+    stay None until the source pipeline exposes per-site leads history.
     """
-    months = []
-    # TODO: replace with real iteration once schema is confirmed, e.g.:
-    # for day in history.get("daily", []):
-    #     ... bucket by month, filter to site_code ...
-    return months
-
+    months = {}
+    for day in history:
+        date = day.get("date")
+        if not date:
+            continue
+        month = date[:7]  # YYYY-MM
+        occ_pct_units = (day.get("by_site_occ_pct") or {}).get(site_code)
+        months[month] = {
+            "month": month,
+            "genuine_enquiries": None,
+            "conversions": None,
+            "move_ins": None,
+            "move_outs": None,
+            "occupancy_sqm_pct": None,
+            "occupancy_units_pct": (occ_pct_units / 100) if occ_pct_units is not None else None,
+        }
+    return [months[m] for m in sorted(months.keys())]
 
 def build_site(data, history, site_code, site_name):
     current = extract_site_current_month(data, site_code)
