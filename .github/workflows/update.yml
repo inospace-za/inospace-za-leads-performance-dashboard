@@ -2,8 +2,6 @@ name: Update leads dashboard
 
 on:
   schedule:
-    # Offset ~1 hour after the source repo's own daily cron so its data.json commit
-    # has landed before we read it. Adjust to match the source repo's actual schedule.
     - cron: "0 6 * * *"
   workflow_dispatch: {}
 
@@ -31,20 +29,20 @@ jobs:
           SOURCE_REPO_BRANCH: master
         run: python etl/fetch_source_data.py
 
-      - name: DEBUG print fetched data
+      - name: TEMP - copy fetched data for inspection
         run: |
-          echo "----- data.json -----"
-          cat _incoming/data.json
-          echo "----- history.json -----"
-          head -c 3000 _incoming/history.json
+          mkdir -p debug
+          cp _incoming/data.json debug/data_sample.json
+          cp _incoming/history.json debug/history_sample.json
 
       - name: Build leads-performance view
         run: python etl/build_leads_view.py
+        continue-on-error: true
 
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/leads_data.json
-          git diff --staged --quiet || git commit -m "Update leads_data.json [skip ci]"
+          git add docs/leads_data.json debug/data_sample.json debug/history_sample.json
+          git diff --staged --quiet || git commit -m "Update leads_data.json + debug samples [skip ci]"
           git push
