@@ -58,9 +58,9 @@
       "name": "Salt River",
       "site_code": "58700",
       "current_month": {
-        "genuine_enquiries": 3,
+        "genuine_enquiries": 4,
         "conversions": 1,
-        "conversion_rate": 0.33299999999999996,
+        "conversion_rate": 0.25,
         "move_ins": 1,
         "move_outs": 1,
         "net_units_absorbed": 0,
@@ -68,7 +68,7 @@
         "occupancy_units_pct": 0.382,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
-          "conversion_rate": "Good",
+          "conversion_rate": "Acceptable",
           "move_ins": "Concerning",
           "occupancy_sqm": "Exceptional"
         },
