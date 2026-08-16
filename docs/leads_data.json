@@ -111,9 +111,9 @@
       "name": "CBD - The Exchange",
       "site_code": "58995",
       "current_month": {
-        "genuine_enquiries": 22,
+        "genuine_enquiries": 24,
         "conversions": 8,
-        "conversion_rate": 0.364,
+        "conversion_rate": 0.33299999999999996,
         "move_ins": 8,
         "move_outs": 0,
         "net_units_absorbed": 8,
@@ -121,7 +121,7 @@
         "occupancy_units_pct": 0.032,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
-          "conversion_rate": "Very Good",
+          "conversion_rate": "Good",
           "move_ins": "Concerning",
           "occupancy_sqm": "Concerning"
         },
