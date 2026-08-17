@@ -23,6 +23,7 @@
   .card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
   .card .label { font-size: 12px; color: var(--ino-darkgrey); text-transform: uppercase; letter-spacing: 0.03em; }
   .card .value { font-size: 28px; font-weight: bold; margin: 4px 0; }
+  .card .split { font-size: 11px; color: var(--ino-darkgrey); margin: -2px 0 4px; }
   .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: #fff; }
   .badge.good { background: var(--good); }
   .badge.bad { background: var(--bad); }
@@ -89,10 +90,17 @@ function renderSite() {
     ['Occupancy % (sqm)', cur.occupancy_sqm_pct != null ? (cur.occupancy_sqm_pct * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.occupancy_sqm],
   ];
 
+  const split = cur.genuine_enquiries_split;
+  const splitLabel = (label) => {
+    if (label !== 'Genuine Enquiries' || !split || split.inquiries == null || split.reservations == null) return '';
+    return `<div class="split">${split.inquiries} inquiries · ${split.reservations} reservations</div>`;
+  };
+
   let html = '<div class="cards">' + cards.map(([label, value, band]) => `
     <div class="card">
       <div class="label">${label}</div>
       <div class="value">${value != null ? value : '—'}</div>
+      ${splitLabel(label)}
       ${band ? `<span class="badge ${badgeClass(band)}">${band}</span>` : ''}
     </div>
   `).join('') + '</div>';
