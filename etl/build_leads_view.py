@@ -5,7 +5,8 @@ site/leads_data.json: a CBD-only-by-default, leads-performance-focused view
 scored against agreed KPI bands, with a rolling 3-month history per site.
 
 Schema confirmed against real samples (2026-08-14 / 2026-08-17):
-  data["by_site"][site_id]["leads"]        -> placed_total, converted_to_lease, conversion_pct (0-100)
+  data["by_site"][site_id]["leads"]        -> placed_inquiries, placed_reservations, placed_total,
+                                               converted_to_lease, conversion_pct (0-100)
   data["by_site"][site_id]["moveins"/"moveouts"/"net_moves"]
   data["by_site"][site_id]["occ_pct_units"/"occ_pct_area"]  -> percentages 0-100, NOT fractions
   data["sites"]                             -> list of {id, name, code, city} (metadata only)
@@ -24,6 +25,9 @@ Known, real gaps in the source data (not fabricated around):
     has NO occupancy figures at all.
   - There is a real gap for any month that is in neither source (e.g. per-site leads
     for July 2026): those cells are left as null / rendered as "-".
+  - The inquiries-vs-reservations split (placed_inquiries/placed_reservations) is only
+    available for the live current month. Neither historical_monthly.json nor
+    history.json (yet) carries this split, so historical rows leave it null.
 
 Usage:
     python etl/build_leads_view.py
@@ -156,6 +160,10 @@ def extract_site_current_month(data, site_code):
 
     return {
         "genuine_enquiries": enquiries,
+        "genuine_enquiries_split": {
+            "inquiries": leads.get("placed_inquiries"),
+            "reservations": leads.get("placed_reservations"),
+        },
         "conversions": conversions,
         "conversion_rate": conversion_rate,
         "move_ins": move_ins,
@@ -226,6 +234,7 @@ def extract_site_recent_months(data, history, historical_monthly, site_code, cur
                 "move_ins": current_month_data["move_ins"],
                 "move_outs": current_month_data["move_outs"],
                 "occupancy_sqm_pct": current_month_data["occupancy_sqm_pct"],
+                "genuine_enquiries_split": current_month_data["genuine_enquiries_split"],
                 "occupancy_units_pct": current_month_data["occupancy_units_pct"],
                 "source": "live_current_month",
             }
@@ -255,6 +264,10 @@ def extract_site_recent_months(data, history, historical_monthly, site_code, cur
                 "conversion_rate": conversion_rate,
                 "move_ins": move_ins,
                 "move_outs": move_outs,
+                "genuine_enquiries_split": None,  # no inquiries/reservations breakdown in
+                                                    # historical_monthly.json; revisit once
+                                                    # history.json carries by_site_leads
+                                                    # (pending parse_reports.py patch)
                 "occupancy_sqm_pct": None,  # never available historically, only units-based is
                 "occupancy_units_pct": occupancy_units_pct,
                 "source": "+".join(sources) if sources else "no_data",
