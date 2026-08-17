@@ -1,14 +1,17 @@
 """
-Fetch site/data.json and site/history.json from the private
-inospace-za/sitelink-analytics-dashboard repo via the GitHub Contents API.
-
+Fetch site/data.json, site/history.json, and (if present) site/historical_monthly.json
+from the private inospace-za/sitelink-analytics-dashboard repo via the GitHub Contents API.
 This deliberately does NOT touch Cloudflare Access or the published Pages site -
 it reads the committed files straight out of the git repo, authenticated with a
 fine-grained, read-only PAT (see README.md "Auth").
 
+historical_monthly.json is a one-time backfill file (see that repo's README) - it may
+not exist, so its fetch failure is non-fatal; the dashboard's monthly history for
+Jan-Jun 2026 will simply be unavailable if so.
+
 Usage:
-    export SOURCE_REPO_PAT=ghp_xxx
-    python etl/fetch_source_data.py
+export SOURCE_REPO_PAT=ghp_xxx
+python etl/fetch_source_data.py
 """
 import base64
 import json
@@ -20,9 +23,9 @@ import urllib.error
 SOURCE_OWNER = "inospace-za"
 SOURCE_REPO = "sitelink-analytics-dashboard"
 SOURCE_BRANCH = os.environ.get("SOURCE_REPO_BRANCH", "main")
-FILES_TO_FETCH = ["site/data.json", "site/history.json"]
+REQUIRED_FILES = ["site/data.json", "site/history.json"]
+OPTIONAL_FILES = ["site/historical_monthly.json"]
 OUT_DIR = "_incoming"
-
 
 def fetch_file(path: str, token: str) -> dict:
     url = (
@@ -38,16 +41,8 @@ def fetch_file(path: str, token: str) -> dict:
             "User-Agent": "inospace-leads-dashboard-etl",
         },
     )
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            payload = json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8", errors="replace")
-        raise SystemExit(
-            f"GitHub Contents API error fetching {path}: {e.code} {e.reason}\n{body}\n"
-            "Check SOURCE_REPO_PAT is set, valid, not expired, and has Contents:Read "
-            f"on {SOURCE_OWNER}/{SOURCE_REPO}."
-        )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
     if payload.get("encoding") != "base64":
         raise SystemExit(f"Unexpected encoding for {path}: {payload.get('encoding')}")
     content = base64.b64decode(payload["content"]).decode("utf-8")
@@ -61,10 +56,29 @@ def main():
         sys.exit(1)
 
     os.makedirs(OUT_DIR, exist_ok=True)
-    for path in FILES_TO_FETCH:
-        data = fetch_file(path, token)
-        out_name = os.path.basename(path)
-        out_path = os.path.join(OUT_DIR, out_name)
+
+    for path in REQUIRED_FILES:
+        try:
+            data = fetch_file(path, token)
+        except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8", errors="replace")
+            raise SystemExit(
+                f"GitHub Contents API error fetching {path}: {e.code} {e.reason}\n{body}\n"
+                "Check SOURCE_REPO_PAT is set, valid, not expired, and has Contents:Read "
+                f"on {SOURCE_OWNER}/{SOURCE_REPO}."
+            )
+        out_path = os.path.join(OUT_DIR, os.path.basename(path))
+        with open(out_path, "w") as f:
+            json.dump(data, f, indent=2)
+        print(f"Fetched {path} -> {out_path} ({len(json.dumps(data))} bytes)")
+
+    for path in OPTIONAL_FILES:
+        try:
+            data = fetch_file(path, token)
+        except urllib.error.HTTPError as e:
+            print(f"Optional file {path} not fetched ({e.code} {e.reason}) - skipping.")
+            continue
+        out_path = os.path.join(OUT_DIR, os.path.basename(path))
         with open(out_path, "w") as f:
             json.dump(data, f, indent=2)
         print(f"Fetched {path} -> {out_path} ({len(json.dumps(data))} bytes)")
