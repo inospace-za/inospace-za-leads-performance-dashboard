@@ -39,3 +39,6 @@ jobs:
           git add docs/leads_data.json
           git diff --staged --quiet || git commit -m "Update leads_data.json"
           git push
+
+      - name: Trigger Cloudflare Pages deploy
+        run: curl -fsS -X POST "${{ secrets.CF_DEPLOY_HOOK_URL }}"
