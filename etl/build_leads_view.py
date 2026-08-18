@@ -10,6 +10,12 @@ Schema confirmed against real samples (2026-08-14 / 2026-08-17):
   data["by_site"][site_id]["moveins"/"moveouts"/"net_moves"]
   data["by_site"][site_id]["occ_pct_units"/"occ_pct_area"]  -> percentages 0-100, NOT fractions
   data["sites"]                             -> list of {id, name, code, city} (metadata only)
+  data["categories"][site_id]               -> confirmed 2026-08-18 against
+    sitelink-analytics-dashboard/etl/parse_reports.py (parse_occupancy_stats()):
+    list of per-unit-type dicts {type, occupied, vacant, unrentable, total, occ_pct,
+    avg_std_rate, gross_potential, gross_occupied}. NOTE: that source's own "occ_pct"
+    divides by "total" which INCLUDES unrentable units - see _rentable_occ_pct_units()
+    below, which excludes unrentable from the denominator instead.
   history.json                              -> top-level list of daily snapshots:
     {date, portfolio_occ_pct, portfolio_units_occupied, by_site_occ_pct: {site_id: pct},
      leads_placed, leases_signed, net_moves}
@@ -121,6 +127,30 @@ def diagnostic_flags(genuine_enquiries, move_ins):
     return flags
 
 
+def _rentable_occ_pct_units(categories_for_site):
+    """Occupancy % excluding unrentable stock from the denominator.
+
+    data["categories"][site_code] is a list of per-unit-type dicts from
+    parse_occupancy_stats() in sitelink-analytics-dashboard/etl/parse_reports.py
+    (confirmed against the real source, 2026-08-18), each shaped:
+      {"type", "occupied", "vacant", "unrentable", "total", "occ_pct", ...}
+    That source's own "occ_pct" divides occupied by "total", which INCLUDES
+    unrentable units in the denominator. This recomputes it divided by
+    (total - unrentable) instead, so offline/unrentable stock doesn't drag
+    the occupancy figure down. Returns a 0-100 percentage, or None if there's
+    no rentable stock to divide by (or no categories data for this site).
+    """
+    if not categories_for_site:
+        return None
+    occupied = sum(row.get("occupied", 0) or 0 for row in categories_for_site)
+    unrentable = sum(row.get("unrentable", 0) or 0 for row in categories_for_site)
+    total = sum(row.get("total", 0) or 0 for row in categories_for_site)
+    rentable_total = total - unrentable
+    if rentable_total <= 0:
+        return None
+    return round(100 * occupied / rentable_total, 1)
+
+
 def load_incoming():
     with open(os.path.join(INCOMING_DIR, "data.json")) as f:
         data = json.load(f)
@@ -150,7 +180,17 @@ def extract_site_current_month(data, site_code):
 
     conversion_rate = (conversion_pct / 100) if conversion_pct is not None else None
     occupancy_sqm_pct = (occ_pct_area / 100) if occ_pct_area is not None else None
-    occupancy_units_pct = (occ_pct_units / 100) if occ_pct_units is not None else None
+
+    # Prefer the rentable-excluding figure computed from data["categories"][site_code]
+    # (excludes offline/unrentable units from the denominator). Falls back to the
+    # plain occ_pct_units from data["by_site"] (which does NOT exclude unrentable
+    # stock) only if categories data is missing for this site.
+    categories_for_site = data.get("categories", {}).get(site_code)
+    rentable_occ_pct = _rentable_occ_pct_units(categories_for_site)
+    if rentable_occ_pct is not None:
+        occupancy_units_pct = rentable_occ_pct / 100
+    else:
+        occupancy_units_pct = (occ_pct_units / 100) if occ_pct_units is not None else None
 
     net_units_absorbed = (
         net_moves if net_moves is not None
@@ -287,6 +327,8 @@ def build_site(data, history, historical_monthly, site_code, site_name, run_date
         "conversion_rate": band_label(current["conversion_rate"], "conversion_rate"),
         "move_ins": band_label(current["move_ins"], "move_ins"),
         "occupancy_sqm": band_label(current["occupancy_sqm_pct"], "occupancy_sqm"),
+        # Reuses the occupancy_sqm thresholds - same bands, different denominator (units, not sqm).
+        "occupancy_units": band_label(current["occupancy_units_pct"], "occupancy_sqm"),
     }
     current["diagnostic_flags"] = diagnostic_flags(current["genuine_enquiries"], current["move_ins"])
 
@@ -296,6 +338,7 @@ def build_site(data, history, historical_monthly, site_code, site_name, run_date
             "conversion_rate": band_label(m.get("conversion_rate"), "conversion_rate"),
             "move_ins": band_label(m.get("move_ins"), "move_ins"),
             "occupancy_sqm": band_label(m.get("occupancy_sqm_pct"), "occupancy_sqm"),
+            "occupancy_units": band_label(m.get("occupancy_units_pct"), "occupancy_sqm"),
         }
 
     return {
