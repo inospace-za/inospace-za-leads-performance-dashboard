@@ -18,12 +18,13 @@
         "move_outs": 0,
         "net_units_absorbed": 2,
         "occupancy_sqm_pct": 0.5720000000000001,
-        "occupancy_units_pct": 0.462,
+        "occupancy_units_pct": 0.991,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
           "conversion_rate": "Excellent",
           "move_ins": "Concerning",
-          "occupancy_sqm": "Exceptional"
+          "occupancy_sqm": "Exceptional",
+          "occupancy_units": "Exceptional"
         },
         "diagnostic_flags": []
       },
@@ -43,7 +44,8 @@
             "genuine_enquiries": "Concerning - insufficient demand generation",
             "conversion_rate": "Acceptable",
             "move_ins": "Concerning",
-            "occupancy_sqm": null
+            "occupancy_sqm": null,
+            "occupancy_units": null
           }
         },
         {
@@ -61,7 +63,8 @@
             "genuine_enquiries": null,
             "conversion_rate": null,
             "move_ins": null,
-            "occupancy_sqm": null
+            "occupancy_sqm": null,
+            "occupancy_units": "Exceptional"
           }
         },
         {
@@ -76,13 +79,14 @@
             "inquiries": 3,
             "reservations": 0
           },
-          "occupancy_units_pct": 0.462,
+          "occupancy_units_pct": 0.991,
           "source": "live_current_month",
           "bands": {
             "genuine_enquiries": "Concerning - insufficient demand generation",
             "conversion_rate": "Excellent",
             "move_ins": "Concerning",
-            "occupancy_sqm": "Exceptional"
+            "occupancy_sqm": "Exceptional",
+            "occupancy_units": "Exceptional"
           }
         }
       ]
@@ -102,12 +106,13 @@
         "move_outs": 1,
         "net_units_absorbed": 0,
         "occupancy_sqm_pct": 0.511,
-        "occupancy_units_pct": 0.382,
+        "occupancy_units_pct": 0.848,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
           "conversion_rate": "Acceptable",
           "move_ins": "Concerning",
-          "occupancy_sqm": "Exceptional"
+          "occupancy_sqm": "Exceptional",
+          "occupancy_units": "Exceptional"
         },
         "diagnostic_flags": []
       },
@@ -127,7 +132,8 @@
             "genuine_enquiries": "Acceptable - needs improvement",
             "conversion_rate": "Excellent",
             "move_ins": "Good",
-            "occupancy_sqm": null
+            "occupancy_sqm": null,
+            "occupancy_units": null
           }
         },
         {
@@ -145,7 +151,8 @@
             "genuine_enquiries": null,
             "conversion_rate": null,
             "move_ins": null,
-            "occupancy_sqm": null
+            "occupancy_sqm": null,
+            "occupancy_units": "Reasonable"
           }
         },
         {
@@ -160,13 +167,14 @@
             "inquiries": 2,
             "reservations": 2
           },
-          "occupancy_units_pct": 0.382,
+          "occupancy_units_pct": 0.848,
           "source": "live_current_month",
           "bands": {
             "genuine_enquiries": "Concerning - insufficient demand generation",
             "conversion_rate": "Acceptable",
             "move_ins": "Concerning",
-            "occupancy_sqm": "Exceptional"
+            "occupancy_sqm": "Exceptional",
+            "occupancy_units": "Exceptional"
           }
         }
       ]
@@ -186,12 +194,13 @@
         "move_outs": 0,
         "net_units_absorbed": 8,
         "occupancy_sqm_pct": 0.036000000000000004,
-        "occupancy_units_pct": 0.032,
+        "occupancy_units_pct": 0.052000000000000005,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
           "conversion_rate": "Good",
           "move_ins": "Concerning",
-          "occupancy_sqm": "Concerning"
+          "occupancy_sqm": "Concerning",
+          "occupancy_units": "Concerning"
         },
         "diagnostic_flags": [
           "Insufficient demand generation"
@@ -213,7 +222,8 @@
             "genuine_enquiries": "Concerning - insufficient demand generation",
             "conversion_rate": "Concerning",
             "move_ins": "Concerning",
-            "occupancy_sqm": null
+            "occupancy_sqm": null,
+            "occupancy_units": null
           }
         },
         {
@@ -231,7 +241,8 @@
             "genuine_enquiries": null,
             "conversion_rate": null,
             "move_ins": null,
-            "occupancy_sqm": null
+            "occupancy_sqm": null,
+            "occupancy_units": "Concerning"
           }
         },
         {
@@ -246,13 +257,14 @@
             "inquiries": 18,
             "reservations": 6
           },
-          "occupancy_units_pct": 0.032,
+          "occupancy_units_pct": 0.052000000000000005,
           "source": "live_current_month",
           "bands": {
             "genuine_enquiries": "Concerning - insufficient demand generation",
             "conversion_rate": "Good",
             "move_ins": "Concerning",
-            "occupancy_sqm": "Concerning"
+            "occupancy_sqm": "Concerning",
+            "occupancy_units": "Concerning"
           }
         }
       ]
