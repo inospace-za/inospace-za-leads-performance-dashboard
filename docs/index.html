@@ -251,7 +251,7 @@ function render() {
 
   const subText = (label, band) => {
     if (label === 'Leads') {
-      return 'Inquiries placed this month';
+      return 'All new inquiries this month (vetted or not)';
     }
     if (label === 'Occupancy % (units)') {
       const rentablePct = cur.occupancy_units_rentable_pct != null ? (cur.occupancy_units_rentable_pct * 100).toFixed(1) + '%' : null;
