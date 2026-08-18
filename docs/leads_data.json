@@ -13,7 +13,6 @@
         "conversion_rate": 0.667,
         "move_ins": 2,
         "move_outs": 0,
-        "net_units_absorbed": 2,
         "occupancy_sqm_pct": 0.5720000000000001,
         "occupancy_units_pct": 0.462,
         "occupancy_units_rentable_pct": 0.991,
@@ -28,64 +27,6 @@
       },
       "monthly_history": [
         {
-          "month": "2026-05",
-          "leads": null,
-          "genuine_enquiries": null,
-          "conversions": 7,
-          "conversion_rate": 0.23333333333333334,
-          "move_ins": 7,
-          "move_outs": 10,
-          "occupancy_sqm_pct": null,
-          "occupancy_units_pct": null,
-          "source": "historical_monthly_backfill",
-          "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": "Below Target",
-            "move_ins": "Concerning",
-            "occupancy_sqm": null,
-            "occupancy_units": null
-          }
-        },
-        {
-          "month": "2026-06",
-          "leads": null,
-          "genuine_enquiries": null,
-          "conversions": 9,
-          "conversion_rate": 0.2571428571428571,
-          "move_ins": 9,
-          "move_outs": 5,
-          "occupancy_sqm_pct": null,
-          "occupancy_units_pct": null,
-          "source": "historical_monthly_backfill",
-          "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": "Acceptable",
-            "move_ins": "Concerning",
-            "occupancy_sqm": null,
-            "occupancy_units": null
-          }
-        },
-        {
-          "month": "2026-07",
-          "leads": null,
-          "genuine_enquiries": null,
-          "conversions": null,
-          "conversion_rate": null,
-          "move_ins": null,
-          "move_outs": null,
-          "occupancy_sqm_pct": null,
-          "occupancy_units_pct": 0.8713448275862069,
-          "source": "daily_history_occupancy_avg",
-          "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": null,
-            "move_ins": null,
-            "occupancy_sqm": null,
-            "occupancy_units": "Exceptional"
-          }
-        },
-        {
-          "month": "2026-08",
           "leads": 3,
           "genuine_enquiries": 0,
           "conversions": 2,
@@ -95,6 +36,7 @@
           "occupancy_sqm_pct": 0.5720000000000001,
           "occupancy_units_pct": 0.462,
           "occupancy_units_rentable_pct": 0.991,
+          "month": "2026-08",
           "source": "live_current_month",
           "bands": {
             "genuine_enquiries": "Concerning - insufficient demand generation",
@@ -110,13 +52,12 @@
       "name": "Salt River",
       "site_code": "58700",
       "current_month": {
-        "leads": 2,
+        "leads": 4,
         "genuine_enquiries": 2,
         "conversions": 1,
         "conversion_rate": 0.25,
         "move_ins": 1,
         "move_outs": 1,
-        "net_units_absorbed": 0,
         "occupancy_sqm_pct": 0.511,
         "occupancy_units_pct": 0.382,
         "occupancy_units_rentable_pct": 0.848,
@@ -131,65 +72,7 @@
       },
       "monthly_history": [
         {
-          "month": "2026-05",
-          "leads": null,
-          "genuine_enquiries": null,
-          "conversions": 2,
-          "conversion_rate": 0.037037037037037035,
-          "move_ins": 2,
-          "move_outs": 0,
-          "occupancy_sqm_pct": null,
-          "occupancy_units_pct": null,
-          "source": "historical_monthly_backfill",
-          "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": "Concerning",
-            "move_ins": "Concerning",
-            "occupancy_sqm": null,
-            "occupancy_units": null
-          }
-        },
-        {
-          "month": "2026-06",
-          "leads": null,
-          "genuine_enquiries": null,
-          "conversions": 18,
-          "conversion_rate": 0.4,
-          "move_ins": 18,
-          "move_outs": 0,
-          "occupancy_sqm_pct": null,
-          "occupancy_units_pct": null,
-          "source": "historical_monthly_backfill",
-          "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": "Excellent",
-            "move_ins": "Good",
-            "occupancy_sqm": null,
-            "occupancy_units": null
-          }
-        },
-        {
-          "month": "2026-07",
-          "leads": null,
-          "genuine_enquiries": null,
-          "conversions": null,
-          "conversion_rate": null,
-          "move_ins": null,
-          "move_outs": null,
-          "occupancy_sqm_pct": null,
-          "occupancy_units_pct": 0.2628965517241379,
-          "source": "daily_history_occupancy_avg",
-          "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": null,
-            "move_ins": null,
-            "occupancy_sqm": null,
-            "occupancy_units": "Reasonable"
-          }
-        },
-        {
-          "month": "2026-08",
-          "leads": 2,
+          "leads": 4,
           "genuine_enquiries": 2,
           "conversions": 1,
           "conversion_rate": 0.25,
@@ -198,6 +81,7 @@
           "occupancy_sqm_pct": 0.511,
           "occupancy_units_pct": 0.382,
           "occupancy_units_rentable_pct": 0.848,
+          "month": "2026-08",
           "source": "live_current_month",
           "bands": {
             "genuine_enquiries": "Concerning - insufficient demand generation",
@@ -213,13 +97,12 @@
       "name": "CBD - The Exchange",
       "site_code": "58995",
       "current_month": {
-        "leads": 18,
+        "leads": 24,
         "genuine_enquiries": 6,
         "conversions": 8,
         "conversion_rate": 0.33299999999999996,
         "move_ins": 8,
         "move_outs": 0,
-        "net_units_absorbed": 8,
         "occupancy_sqm_pct": 0.036000000000000004,
         "occupancy_units_pct": 0.032,
         "occupancy_units_rentable_pct": 0.052000000000000005,
@@ -234,65 +117,7 @@
       },
       "monthly_history": [
         {
-          "month": "2026-05",
-          "leads": null,
-          "genuine_enquiries": null,
-          "conversions": 0,
-          "conversion_rate": null,
-          "move_ins": 0,
-          "move_outs": 0,
-          "occupancy_sqm_pct": null,
-          "occupancy_units_pct": null,
-          "source": "historical_monthly_backfill",
-          "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": null,
-            "move_ins": "Concerning",
-            "occupancy_sqm": null,
-            "occupancy_units": null
-          }
-        },
-        {
-          "month": "2026-06",
-          "leads": null,
-          "genuine_enquiries": null,
-          "conversions": 0,
-          "conversion_rate": 0.0,
-          "move_ins": 0,
-          "move_outs": 0,
-          "occupancy_sqm_pct": null,
-          "occupancy_units_pct": null,
-          "source": "historical_monthly_backfill",
-          "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": "Concerning",
-            "move_ins": "Concerning",
-            "occupancy_sqm": null,
-            "occupancy_units": null
-          }
-        },
-        {
-          "month": "2026-07",
-          "leads": null,
-          "genuine_enquiries": null,
-          "conversions": null,
-          "conversion_rate": null,
-          "move_ins": null,
-          "move_outs": null,
-          "occupancy_sqm_pct": null,
-          "occupancy_units_pct": 0.0,
-          "source": "daily_history_occupancy_avg",
-          "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": null,
-            "move_ins": null,
-            "occupancy_sqm": null,
-            "occupancy_units": "Concerning"
-          }
-        },
-        {
-          "month": "2026-08",
-          "leads": 18,
+          "leads": 24,
           "genuine_enquiries": 6,
           "conversions": 8,
           "conversion_rate": 0.33299999999999996,
@@ -301,6 +126,7 @@
           "occupancy_sqm_pct": 0.036000000000000004,
           "occupancy_units_pct": 0.032,
           "occupancy_units_rentable_pct": 0.052000000000000005,
+          "month": "2026-08",
           "source": "live_current_month",
           "bands": {
             "genuine_enquiries": "Concerning - insufficient demand generation",
@@ -408,5 +234,5 @@
     "price_issue_moveins_max": 15
   },
   "bands_note": "Same KPI bands apply to every site initially - split per site later if needed.",
-  "history_note": "Monthly history blends three sources: the live current month (real), a one-time Jan-Jun 2026 backfill of real per-site leads/moves (no occupancy in that source), and the daily pipeline's per-site occupancy average from 2026-07-02 onward (no per-site leads in that source). Cells with no real source are left blank rather than estimated."
+  "history_note": "Monthly history is tracked from 2026-08-18 onward only - no backfilled or blended historical data. Each site's history grows by one real month at a time as the daily pipeline runs: every day's run updates the current month's entry in the committed archive (docs/leads_history_archive.json) with the latest month-to-date figures, and that entry is never touched again once the month closes and a new one begins. Months before tracking started simply aren't in the history - nothing is backfilled or estimated."
 }
