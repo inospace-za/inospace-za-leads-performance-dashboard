@@ -45,6 +45,8 @@ import os
 from datetime import date
 
 INCOMING_DIR = "_incoming"
+DATA_DIR = "data"  # committed fallback location for historical_monthly.json (real backfill data,
+                    # not gitignored like _incoming/) - see load_incoming()
 OUT_PATH = "docs/leads_data.json"
 
 CBD_SITE_CODE = "58995"  # site id for CBD / The Exchange (sLocationCode L004)
@@ -56,7 +58,7 @@ KNOWN_SITES = {
     "58995": "CBD - The Exchange",
 }
 
-MONTHS_OF_HISTORY = 3
+MONTHS_OF_HISTORY = 4  # widened 2026-08-18 to bring May 2026 into view alongside Jun/Jul/Aug
 
 # ---------------------------------------------------------------------------
 # KPI bands - editable. Each list is (min_threshold, label), ascending.
@@ -160,6 +162,14 @@ def load_incoming():
         history = json.load(f)
     historical_monthly = None
     hm_path = os.path.join(INCOMING_DIR, "historical_monthly.json")
+    if not os.path.exists(hm_path):
+        # _incoming/ is gitignored (ephemeral, fetched fresh each run) and has never
+        # actually carried this file in practice. data/historical_monthly.json is the
+        # real, committed backfill (built 2026-08-18 from real SiteLink Mgmt
+        # InquiryTracking + Unit MoveInsAndMoveOuts exports for Maitland/Salt River,
+        # May-Jul 2026) - see that file's own notes for exactly how each field was
+        # derived and its known limitations.
+        hm_path = os.path.join(DATA_DIR, "historical_monthly.json")
     if os.path.exists(hm_path):
         with open(hm_path) as f:
             historical_monthly = json.load(f)
