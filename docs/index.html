@@ -34,8 +34,7 @@
     padding:8px 15px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
   .switch button:hover{border-color:#c4cdd8}
   .switch button.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 2px 8px rgba(225,27,34,.28)}
-  .switch button.criteria-pill{border-style:dashed;color:var(--muted)}
-  .switch button.criteria-pill.active{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:none}
+  .btn-print.active{background:var(--ink);border-color:var(--ink);color:#fff}
   th.sortable{cursor:pointer;user-select:none}
   th.sortable:hover{color:var(--ink)}
   .sort-arrow{margin-left:4px;font-size:10px}
@@ -123,6 +122,7 @@
   </div>
   <div class="switch" id="switch"></div>
   <div class="spacer"></div>
+  <button class="btn-print" id="btn-criteria" onclick="toggleCriteria()">📋 Criteria</button>
   <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
   <div class="updated" id="updated"></div>
 </div></div>
@@ -179,19 +179,23 @@ function buildSwitch() {
   sw.innerHTML = codes.map(code => {
     const site = DATA.sites[code];
     return `<button data-v="${code}" class="${VIEW_MODE === 'site' && code === ACTIVE_SITE ? 'active' : ''}">${site.name}</button>`;
-  }).join('') + `<button data-v="__criteria__" class="criteria-pill ${VIEW_MODE === 'criteria' ? 'active' : ''}">📋 Criteria</button>`;
+  }).join('');
   sw.querySelectorAll('button').forEach(btn => {
     btn.onclick = () => {
-      if (btn.dataset.v === '__criteria__') {
-        VIEW_MODE = 'criteria';
-      } else {
-        VIEW_MODE = 'site';
-        ACTIVE_SITE = btn.dataset.v;
-      }
+      VIEW_MODE = 'site';
+      ACTIVE_SITE = btn.dataset.v;
       sw.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === btn));
+      document.getElementById('btn-criteria').classList.remove('active');
       render();
     };
   });
+}
+
+function toggleCriteria() {
+  VIEW_MODE = VIEW_MODE === 'criteria' ? 'site' : 'criteria';
+  document.getElementById('btn-criteria').classList.toggle('active', VIEW_MODE === 'criteria');
+  document.querySelectorAll('#switch button').forEach(x => x.classList.toggle('active', VIEW_MODE === 'site' && x.dataset.v === ACTIVE_SITE));
+  render();
 }
 
 function renderCriteria() {
