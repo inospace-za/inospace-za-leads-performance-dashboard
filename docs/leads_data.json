@@ -7,11 +7,8 @@
       "name": "Maitland",
       "site_code": "56788",
       "current_month": {
-        "genuine_enquiries": 3,
-        "genuine_enquiries_split": {
-          "inquiries": 3,
-          "reservations": 0
-        },
+        "leads": 3,
+        "genuine_enquiries": 0,
         "conversions": 2,
         "conversion_rate": 0.667,
         "move_ins": 2,
@@ -32,17 +29,17 @@
       "monthly_history": [
         {
           "month": "2026-05",
-          "genuine_enquiries": 30,
+          "leads": null,
+          "genuine_enquiries": null,
           "conversions": 7,
           "conversion_rate": 0.23333333333333334,
           "move_ins": 7,
           "move_outs": 10,
-          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": null,
           "source": "historical_monthly_backfill",
           "bands": {
-            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "genuine_enquiries": null,
             "conversion_rate": "Below Target",
             "move_ins": "Concerning",
             "occupancy_sqm": null,
@@ -51,17 +48,17 @@
         },
         {
           "month": "2026-06",
-          "genuine_enquiries": 35,
+          "leads": null,
+          "genuine_enquiries": null,
           "conversions": 9,
           "conversion_rate": 0.2571428571428571,
           "move_ins": 9,
           "move_outs": 5,
-          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": null,
           "source": "historical_monthly_backfill",
           "bands": {
-            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "genuine_enquiries": null,
             "conversion_rate": "Acceptable",
             "move_ins": "Concerning",
             "occupancy_sqm": null,
@@ -70,12 +67,12 @@
         },
         {
           "month": "2026-07",
+          "leads": null,
           "genuine_enquiries": null,
           "conversions": null,
           "conversion_rate": null,
           "move_ins": null,
           "move_outs": null,
-          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": 0.8713448275862069,
           "source": "daily_history_occupancy_avg",
@@ -89,16 +86,13 @@
         },
         {
           "month": "2026-08",
-          "genuine_enquiries": 3,
+          "leads": 3,
+          "genuine_enquiries": 0,
           "conversions": 2,
           "conversion_rate": 0.667,
           "move_ins": 2,
           "move_outs": 0,
           "occupancy_sqm_pct": 0.5720000000000001,
-          "genuine_enquiries_split": {
-            "inquiries": 3,
-            "reservations": 0
-          },
           "occupancy_units_pct": 0.462,
           "occupancy_units_rentable_pct": 0.991,
           "source": "live_current_month",
@@ -116,11 +110,8 @@
       "name": "Salt River",
       "site_code": "58700",
       "current_month": {
-        "genuine_enquiries": 4,
-        "genuine_enquiries_split": {
-          "inquiries": 2,
-          "reservations": 2
-        },
+        "leads": 2,
+        "genuine_enquiries": 2,
         "conversions": 1,
         "conversion_rate": 0.25,
         "move_ins": 1,
@@ -141,17 +132,17 @@
       "monthly_history": [
         {
           "month": "2026-05",
-          "genuine_enquiries": 54,
+          "leads": null,
+          "genuine_enquiries": null,
           "conversions": 2,
           "conversion_rate": 0.037037037037037035,
           "move_ins": 2,
           "move_outs": 0,
-          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": null,
           "source": "historical_monthly_backfill",
           "bands": {
-            "genuine_enquiries": "Acceptable - needs improvement",
+            "genuine_enquiries": null,
             "conversion_rate": "Concerning",
             "move_ins": "Concerning",
             "occupancy_sqm": null,
@@ -160,17 +151,17 @@
         },
         {
           "month": "2026-06",
-          "genuine_enquiries": 45,
+          "leads": null,
+          "genuine_enquiries": null,
           "conversions": 18,
           "conversion_rate": 0.4,
           "move_ins": 18,
           "move_outs": 0,
-          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": null,
           "source": "historical_monthly_backfill",
           "bands": {
-            "genuine_enquiries": "Acceptable - needs improvement",
+            "genuine_enquiries": null,
             "conversion_rate": "Excellent",
             "move_ins": "Good",
             "occupancy_sqm": null,
@@ -179,12 +170,12 @@
         },
         {
           "month": "2026-07",
+          "leads": null,
           "genuine_enquiries": null,
           "conversions": null,
           "conversion_rate": null,
           "move_ins": null,
           "move_outs": null,
-          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": 0.2628965517241379,
           "source": "daily_history_occupancy_avg",
@@ -198,16 +189,13 @@
         },
         {
           "month": "2026-08",
-          "genuine_enquiries": 4,
+          "leads": 2,
+          "genuine_enquiries": 2,
           "conversions": 1,
           "conversion_rate": 0.25,
           "move_ins": 1,
           "move_outs": 1,
           "occupancy_sqm_pct": 0.511,
-          "genuine_enquiries_split": {
-            "inquiries": 2,
-            "reservations": 2
-          },
           "occupancy_units_pct": 0.382,
           "occupancy_units_rentable_pct": 0.848,
           "source": "live_current_month",
@@ -225,11 +213,8 @@
       "name": "CBD - The Exchange",
       "site_code": "58995",
       "current_month": {
-        "genuine_enquiries": 24,
-        "genuine_enquiries_split": {
-          "inquiries": 18,
-          "reservations": 6
-        },
+        "leads": 18,
+        "genuine_enquiries": 6,
         "conversions": 8,
         "conversion_rate": 0.33299999999999996,
         "move_ins": 8,
@@ -245,24 +230,22 @@
           "occupancy_sqm": "Concerning",
           "occupancy_units": "Concerning"
         },
-        "diagnostic_flags": [
-          "Insufficient demand generation"
-        ]
+        "diagnostic_flags": []
       },
       "monthly_history": [
         {
           "month": "2026-05",
-          "genuine_enquiries": 0,
+          "leads": null,
+          "genuine_enquiries": null,
           "conversions": 0,
           "conversion_rate": null,
           "move_ins": 0,
           "move_outs": 0,
-          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": null,
           "source": "historical_monthly_backfill",
           "bands": {
-            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "genuine_enquiries": null,
             "conversion_rate": null,
             "move_ins": "Concerning",
             "occupancy_sqm": null,
@@ -271,17 +254,17 @@
         },
         {
           "month": "2026-06",
-          "genuine_enquiries": 18,
+          "leads": null,
+          "genuine_enquiries": null,
           "conversions": 0,
           "conversion_rate": 0.0,
           "move_ins": 0,
           "move_outs": 0,
-          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": null,
           "source": "historical_monthly_backfill",
           "bands": {
-            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "genuine_enquiries": null,
             "conversion_rate": "Concerning",
             "move_ins": "Concerning",
             "occupancy_sqm": null,
@@ -290,12 +273,12 @@
         },
         {
           "month": "2026-07",
+          "leads": null,
           "genuine_enquiries": null,
           "conversions": null,
           "conversion_rate": null,
           "move_ins": null,
           "move_outs": null,
-          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": 0.0,
           "source": "daily_history_occupancy_avg",
@@ -309,16 +292,13 @@
         },
         {
           "month": "2026-08",
-          "genuine_enquiries": 24,
+          "leads": 18,
+          "genuine_enquiries": 6,
           "conversions": 8,
           "conversion_rate": 0.33299999999999996,
           "move_ins": 8,
           "move_outs": 0,
           "occupancy_sqm_pct": 0.036000000000000004,
-          "genuine_enquiries_split": {
-            "inquiries": 18,
-            "reservations": 6
-          },
           "occupancy_units_pct": 0.032,
           "occupancy_units_rentable_pct": 0.052000000000000005,
           "source": "live_current_month",
