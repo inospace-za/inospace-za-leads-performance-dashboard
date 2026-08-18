@@ -31,6 +31,25 @@
       },
       "monthly_history": [
         {
+          "month": "2026-05",
+          "genuine_enquiries": 30,
+          "conversions": 7,
+          "conversion_rate": 0.23333333333333334,
+          "move_ins": 7,
+          "move_outs": 10,
+          "genuine_enquiries_split": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": null,
+          "source": "historical_monthly_backfill",
+          "bands": {
+            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "conversion_rate": "Below Target",
+            "move_ins": "Concerning",
+            "occupancy_sqm": null,
+            "occupancy_units": null
+          }
+        },
+        {
           "month": "2026-06",
           "genuine_enquiries": 35,
           "conversions": 9,
@@ -120,6 +139,25 @@
         "diagnostic_flags": []
       },
       "monthly_history": [
+        {
+          "month": "2026-05",
+          "genuine_enquiries": 54,
+          "conversions": 2,
+          "conversion_rate": 0.037037037037037035,
+          "move_ins": 2,
+          "move_outs": 0,
+          "genuine_enquiries_split": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": null,
+          "source": "historical_monthly_backfill",
+          "bands": {
+            "genuine_enquiries": "Acceptable - needs improvement",
+            "conversion_rate": "Concerning",
+            "move_ins": "Concerning",
+            "occupancy_sqm": null,
+            "occupancy_units": null
+          }
+        },
         {
           "month": "2026-06",
           "genuine_enquiries": 45,
@@ -212,6 +250,25 @@
         ]
       },
       "monthly_history": [
+        {
+          "month": "2026-05",
+          "genuine_enquiries": 0,
+          "conversions": 0,
+          "conversion_rate": null,
+          "move_ins": 0,
+          "move_outs": 0,
+          "genuine_enquiries_split": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": null,
+          "source": "historical_monthly_backfill",
+          "bands": {
+            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "conversion_rate": null,
+            "move_ins": "Concerning",
+            "occupancy_sqm": null,
+            "occupancy_units": null
+          }
+        },
         {
           "month": "2026-06",
           "genuine_enquiries": 18,
