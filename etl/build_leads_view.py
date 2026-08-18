@@ -176,7 +176,17 @@ def extract_site_current_month(data, site_code):
     site = data.get("by_site", {}).get(site_code, {})
     leads = site.get("leads", {})
 
-    enquiries = leads.get("placed_total")
+    # 2026-08-18: split what used to be one combined "genuine_enquiries" (placed_total)
+    # into two distinct metrics per direct instruction:
+    #   leads              = placed_inquiries    (first-contact enquiries)
+    #   genuine_enquiries  = placed_reservations  (people who've committed to reserving -
+    #                        the more qualified/"genuine" signal)
+    # Only available for the live current month - the source's historical backfill only
+    # ever has one combined "leads_placed" figure, never a real inquiries/reservations
+    # split, so historical months leave both of these blank rather than guessing which
+    # one the combined number represents.
+    leads_count = leads.get("placed_inquiries")
+    enquiries = leads.get("placed_reservations")
     conversions = leads.get("converted_to_lease")
     move_ins = site.get("moveins")
     move_outs = site.get("moveouts")
@@ -208,11 +218,8 @@ def extract_site_current_month(data, site_code):
     )
 
     return {
+        "leads": leads_count,
         "genuine_enquiries": enquiries,
-        "genuine_enquiries_split": {
-            "inquiries": leads.get("placed_inquiries"),
-            "reservations": leads.get("placed_reservations"),
-        },
         "conversions": conversions,
         "conversion_rate": conversion_rate,
         "move_ins": move_ins,
@@ -278,26 +285,34 @@ def extract_site_recent_months(data, history, historical_monthly, site_code, cur
         if month == current_month_key:
             row = {
                 "month": month,
+                "leads": current_month_data["leads"],
                 "genuine_enquiries": current_month_data["genuine_enquiries"],
                 "conversions": current_month_data["conversions"],
                 "conversion_rate": current_month_data["conversion_rate"],
                 "move_ins": current_month_data["move_ins"],
                 "move_outs": current_month_data["move_outs"],
                 "occupancy_sqm_pct": current_month_data["occupancy_sqm_pct"],
-                "genuine_enquiries_split": current_month_data["genuine_enquiries_split"],
                 "occupancy_units_pct": current_month_data["occupancy_units_pct"],
                 "occupancy_units_rentable_pct": current_month_data["occupancy_units_rentable_pct"],
                 "source": "live_current_month",
             }
         else:
             hm = hm_by_month.get(month)
-            enquiries = hm.get("leads_placed") if hm else None
+            # hm's "leads_placed" is a single COMBINED figure (inquiries + reservations) -
+            # the source's historical backfill has never carried a real inquiries-vs-
+            # reservations split. Since 2026-08-18 "leads" and "genuine_enquiries" are two
+            # distinct metrics (placed_inquiries vs placed_reservations respectively), and
+            # attributing the combined historical number to either would misrepresent it -
+            # so both are left blank for historical months. The combined figure is still
+            # used for conversion_rate below, since that ratio (leases signed vs total lead
+            # activity) remains a meaningful, real number on its own.
+            combined_placed = hm.get("leads_placed") if hm else None
             conversions = hm.get("leases_signed") if hm else None
             move_ins = hm.get("moveins") if hm else None
             move_outs = hm.get("moveouts") if hm else None
             conversion_rate = (
-                (conversions / enquiries) if enquiries else None
-            ) if (enquiries is not None and conversions is not None) else None
+                (conversions / combined_placed) if combined_placed else None
+            ) if (combined_placed is not None and conversions is not None) else None
 
             avg_occ = daily_occ_by_month.get(month)
             occupancy_units_pct = (avg_occ / 100) if avg_occ is not None else None
@@ -310,15 +325,12 @@ def extract_site_recent_months(data, history, historical_monthly, site_code, cur
 
             row = {
                 "month": month,
-                "genuine_enquiries": enquiries,
+                "leads": None,  # see comment above - no real split available historically
+                "genuine_enquiries": None,
                 "conversions": conversions,
                 "conversion_rate": conversion_rate,
                 "move_ins": move_ins,
                 "move_outs": move_outs,
-                "genuine_enquiries_split": None,  # no inquiries/reservations breakdown in
-                                                    # historical_monthly.json; revisit once
-                                                    # history.json carries by_site_leads
-                                                    # (pending parse_reports.py patch)
                 "occupancy_sqm_pct": None,  # never available historically, only units-based is
                 "occupancy_units_pct": occupancy_units_pct,
                 "source": "+".join(sources) if sources else "no_data",
