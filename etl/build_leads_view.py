@@ -13,9 +13,11 @@ Schema confirmed against real samples (2026-08-14 / 2026-08-17):
   data["categories"][site_id]               -> confirmed 2026-08-18 against
     sitelink-analytics-dashboard/etl/parse_reports.py (parse_occupancy_stats()):
     list of per-unit-type dicts {type, occupied, vacant, unrentable, total, occ_pct,
-    avg_std_rate, gross_potential, gross_occupied}. NOTE: that source's own "occ_pct"
-    divides by "total" which INCLUDES unrentable units - see _rentable_occ_pct_units()
-    below, which excludes unrentable from the denominator instead.
+    avg_std_rate, gross_potential, gross_occupied}. Used only to compute the
+    SUPPLEMENTARY "occupancy_units_rentable_pct" figure (see _rentable_occ_pct_units()
+    below) - the headline "occupancy_units_pct" stays on the same all-units basis as
+    "occupancy_sqm_pct" so the two headline metrics remain directly comparable
+    (per 2026-08-18 discussion: reported units%/sqm% must share the same basis).
   history.json                              -> top-level list of daily snapshots:
     {date, portfolio_occ_pct, portfolio_units_occupied, by_site_occ_pct: {site_id: pct},
      leads_placed, leases_signed, net_moves}
@@ -181,16 +183,17 @@ def extract_site_current_month(data, site_code):
     conversion_rate = (conversion_pct / 100) if conversion_pct is not None else None
     occupancy_sqm_pct = (occ_pct_area / 100) if occ_pct_area is not None else None
 
-    # Prefer the rentable-excluding figure computed from data["categories"][site_code]
-    # (excludes offline/unrentable units from the denominator). Falls back to the
-    # plain occ_pct_units from data["by_site"] (which does NOT exclude unrentable
-    # stock) only if categories data is missing for this site.
+    # occupancy_units_pct is on the SAME basis as occupancy_sqm_pct: % of ALL units
+    # (unrentable included in the denominator) - so the two headline occupancy figures
+    # stay directly comparable, per 2026-08-18 discussion.
+    occupancy_units_pct = (occ_pct_units / 100) if occ_pct_units is not None else None
+
+    # Supplementary figure only: % of RENTABLE units (excludes offline/unrentable stock
+    # from the denominator), from data["categories"][site_code]. Shown as a sub-line
+    # under the headline metric, not used for banding/scoring.
     categories_for_site = data.get("categories", {}).get(site_code)
     rentable_occ_pct = _rentable_occ_pct_units(categories_for_site)
-    if rentable_occ_pct is not None:
-        occupancy_units_pct = rentable_occ_pct / 100
-    else:
-        occupancy_units_pct = (occ_pct_units / 100) if occ_pct_units is not None else None
+    occupancy_units_rentable_pct = (rentable_occ_pct / 100) if rentable_occ_pct is not None else None
 
     net_units_absorbed = (
         net_moves if net_moves is not None
@@ -211,6 +214,7 @@ def extract_site_current_month(data, site_code):
         "net_units_absorbed": net_units_absorbed,
         "occupancy_sqm_pct": occupancy_sqm_pct,
         "occupancy_units_pct": occupancy_units_pct,
+        "occupancy_units_rentable_pct": occupancy_units_rentable_pct,
     }
 
 
@@ -276,6 +280,7 @@ def extract_site_recent_months(data, history, historical_monthly, site_code, cur
                 "occupancy_sqm_pct": current_month_data["occupancy_sqm_pct"],
                 "genuine_enquiries_split": current_month_data["genuine_enquiries_split"],
                 "occupancy_units_pct": current_month_data["occupancy_units_pct"],
+                "occupancy_units_rentable_pct": current_month_data["occupancy_units_rentable_pct"],
                 "source": "live_current_month",
             }
         else:
