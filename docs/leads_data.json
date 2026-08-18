@@ -1,11 +1,17 @@
 {
   "generated_note": "Built by leads-performance-dashboard/etl/build_leads_view.py",
+  "generated_at": "2026-08-17T05:48:09",
+  "run_date": "2026-08-17",
   "sites": {
     "56788": {
       "name": "Maitland",
       "site_code": "56788",
       "current_month": {
         "genuine_enquiries": 3,
+        "genuine_enquiries_split": {
+          "inquiries": 3,
+          "reservations": 0
+        },
         "conversions": 2,
         "conversion_rate": 0.667,
         "move_ins": 2,
@@ -23,13 +29,34 @@
       },
       "monthly_history": [
         {
+          "month": "2026-06",
+          "genuine_enquiries": 35,
+          "conversions": 9,
+          "conversion_rate": 0.2571428571428571,
+          "move_ins": 9,
+          "move_outs": 5,
+          "genuine_enquiries_split": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": null,
+          "source": "historical_monthly_backfill",
+          "bands": {
+            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "conversion_rate": "Acceptable",
+            "move_ins": "Concerning",
+            "occupancy_sqm": null
+          }
+        },
+        {
           "month": "2026-07",
           "genuine_enquiries": null,
           "conversions": null,
+          "conversion_rate": null,
           "move_ins": null,
           "move_outs": null,
+          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
-          "occupancy_units_pct": 0.444,
+          "occupancy_units_pct": 0.8713448275862069,
+          "source": "daily_history_occupancy_avg",
           "bands": {
             "genuine_enquiries": null,
             "conversion_rate": null,
@@ -39,17 +66,23 @@
         },
         {
           "month": "2026-08",
-          "genuine_enquiries": null,
-          "conversions": null,
-          "move_ins": null,
-          "move_outs": null,
-          "occupancy_sqm_pct": null,
+          "genuine_enquiries": 3,
+          "conversions": 2,
+          "conversion_rate": 0.667,
+          "move_ins": 2,
+          "move_outs": 0,
+          "occupancy_sqm_pct": 0.5720000000000001,
+          "genuine_enquiries_split": {
+            "inquiries": 3,
+            "reservations": 0
+          },
           "occupancy_units_pct": 0.462,
+          "source": "live_current_month",
           "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": null,
-            "move_ins": null,
-            "occupancy_sqm": null
+            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "conversion_rate": "Excellent",
+            "move_ins": "Concerning",
+            "occupancy_sqm": "Exceptional"
           }
         }
       ]
@@ -59,6 +92,10 @@
       "site_code": "58700",
       "current_month": {
         "genuine_enquiries": 4,
+        "genuine_enquiries_split": {
+          "inquiries": 2,
+          "reservations": 2
+        },
         "conversions": 1,
         "conversion_rate": 0.25,
         "move_ins": 1,
@@ -76,13 +113,34 @@
       },
       "monthly_history": [
         {
+          "month": "2026-06",
+          "genuine_enquiries": 45,
+          "conversions": 18,
+          "conversion_rate": 0.4,
+          "move_ins": 18,
+          "move_outs": 0,
+          "genuine_enquiries_split": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": null,
+          "source": "historical_monthly_backfill",
+          "bands": {
+            "genuine_enquiries": "Acceptable - needs improvement",
+            "conversion_rate": "Excellent",
+            "move_ins": "Good",
+            "occupancy_sqm": null
+          }
+        },
+        {
           "month": "2026-07",
           "genuine_enquiries": null,
           "conversions": null,
+          "conversion_rate": null,
           "move_ins": null,
           "move_outs": null,
+          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
-          "occupancy_units_pct": 0.34299999999999997,
+          "occupancy_units_pct": 0.2628965517241379,
+          "source": "daily_history_occupancy_avg",
           "bands": {
             "genuine_enquiries": null,
             "conversion_rate": null,
@@ -92,17 +150,23 @@
         },
         {
           "month": "2026-08",
-          "genuine_enquiries": null,
-          "conversions": null,
-          "move_ins": null,
-          "move_outs": null,
-          "occupancy_sqm_pct": null,
+          "genuine_enquiries": 4,
+          "conversions": 1,
+          "conversion_rate": 0.25,
+          "move_ins": 1,
+          "move_outs": 1,
+          "occupancy_sqm_pct": 0.511,
+          "genuine_enquiries_split": {
+            "inquiries": 2,
+            "reservations": 2
+          },
           "occupancy_units_pct": 0.382,
+          "source": "live_current_month",
           "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": null,
-            "move_ins": null,
-            "occupancy_sqm": null
+            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "conversion_rate": "Acceptable",
+            "move_ins": "Concerning",
+            "occupancy_sqm": "Exceptional"
           }
         }
       ]
@@ -112,6 +176,10 @@
       "site_code": "58995",
       "current_month": {
         "genuine_enquiries": 24,
+        "genuine_enquiries_split": {
+          "inquiries": 18,
+          "reservations": 6
+        },
         "conversions": 8,
         "conversion_rate": 0.33299999999999996,
         "move_ins": 8,
@@ -131,13 +199,34 @@
       },
       "monthly_history": [
         {
+          "month": "2026-06",
+          "genuine_enquiries": 18,
+          "conversions": 0,
+          "conversion_rate": 0.0,
+          "move_ins": 0,
+          "move_outs": 0,
+          "genuine_enquiries_split": null,
+          "occupancy_sqm_pct": null,
+          "occupancy_units_pct": null,
+          "source": "historical_monthly_backfill",
+          "bands": {
+            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "conversion_rate": "Concerning",
+            "move_ins": "Concerning",
+            "occupancy_sqm": null
+          }
+        },
+        {
           "month": "2026-07",
           "genuine_enquiries": null,
           "conversions": null,
+          "conversion_rate": null,
           "move_ins": null,
           "move_outs": null,
+          "genuine_enquiries_split": null,
           "occupancy_sqm_pct": null,
           "occupancy_units_pct": 0.0,
+          "source": "daily_history_occupancy_avg",
           "bands": {
             "genuine_enquiries": null,
             "conversion_rate": null,
@@ -147,17 +236,23 @@
         },
         {
           "month": "2026-08",
-          "genuine_enquiries": null,
-          "conversions": null,
-          "move_ins": null,
-          "move_outs": null,
-          "occupancy_sqm_pct": null,
+          "genuine_enquiries": 24,
+          "conversions": 8,
+          "conversion_rate": 0.33299999999999996,
+          "move_ins": 8,
+          "move_outs": 0,
+          "occupancy_sqm_pct": 0.036000000000000004,
+          "genuine_enquiries_split": {
+            "inquiries": 18,
+            "reservations": 6
+          },
           "occupancy_units_pct": 0.032,
+          "source": "live_current_month",
           "bands": {
-            "genuine_enquiries": null,
-            "conversion_rate": null,
-            "move_ins": null,
-            "occupancy_sqm": null
+            "genuine_enquiries": "Concerning - insufficient demand generation",
+            "conversion_rate": "Good",
+            "move_ins": "Concerning",
+            "occupancy_sqm": "Concerning"
           }
         }
       ]
@@ -257,5 +352,6 @@
     "price_issue_enq_max": 90,
     "price_issue_moveins_max": 15
   },
-  "bands_note": "Same KPI bands apply to every site initially - split per site later if needed."
+  "bands_note": "Same KPI bands apply to every site initially - split per site later if needed.",
+  "history_note": "Monthly history blends three sources: the live current month (real), a one-time Jan-Jun 2026 backfill of real per-site leads/moves (no occupancy in that source), and the daily pipeline's per-site occupancy average from 2026-07-02 onward (no per-site leads in that source). Cells with no real source are left blank rather than estimated."
 }
