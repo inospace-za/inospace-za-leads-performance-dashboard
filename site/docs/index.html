@@ -1,118 +1,170 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>CBD Leads Performance Dashboard</title>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inospace · Leads Performance</title>
 <style>
-  :root {
-    --ino-red: #B80006;
-    --ino-black: #0A0203;
-    --ino-darkgrey: #323232;
-    --ino-lightgrey: #A7A8AA;
-    --good: #1a7f37;
-    --bad: #b80006;
-    --neutral: #6b6b6b;
+  html{color-scheme:light}
+  :root{
+    --bg:#eceef0; --card:#ffffff; --ink:#14161a; --muted:#727a86;
+    --line:#e6e9ee; --red:#e11b22; --red-d:#b3151b; --black:#0f1114;
+    --red-tint:rgba(225,27,34,.08);
+    --good:#2f9e44; --amber:#e8770c; --chip:#f2f4f7;
+    --shadow:0 1px 2px rgba(16,24,40,.05),0 4px 16px rgba(16,24,40,.05);
+    --radius:16px;
   }
-  body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f5f5f5; color: var(--ino-black); }
-  header { background: var(--ino-red); color: #fff; padding: 24px 32px; }
-  header h1 { margin: 0; font-size: 22px; }
-  header p { margin: 4px 0 0; opacity: 0.9; font-size: 14px; }
-  main { padding: 24px 32px; max-width: 1100px; margin: 0 auto; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  .card .label { font-size: 12px; color: var(--ino-darkgrey); text-transform: uppercase; letter-spacing: 0.03em; }
-  .card .value { font-size: 28px; font-weight: bold; margin: 4px 0; }
-  .card .split { font-size: 11px; color: var(--ino-darkgrey); margin: -2px 0 4px; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: #fff; }
-  .badge.good { background: var(--good); }
-  .badge.bad { background: var(--bad); }
-  .badge.neutral { background: var(--neutral); }
-  .flags { background: #fff3f3; border: 1px solid var(--ino-red); border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; }
-  .flags h3 { margin: 0 0 8px; color: var(--ino-red); font-size: 14px; }
-  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
-  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; }
-  th { background: var(--ino-darkgrey); color: #fff; }
-  .note { font-size: 12px; color: var(--ino-darkgrey); font-style: italic; margin-top: 8px; }
-  .error { background: #fff3f3; border: 1px solid var(--ino-red); padding: 16px; border-radius: 8px; }
-  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid #ddd; }
-  .tab { padding: 10px 18px; cursor: pointer; font-size: 14px; font-weight: bold; color: var(--ino-darkgrey);
-         border: none; background: none; border-bottom: 3px solid transparent; }
-  .tab.active { color: var(--ino-red); border-bottom-color: var(--ino-red); }
-  .tab:hover { color: var(--ino-red); }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 20px 64px}
+
+  /* single light top bar: brand + tabs + print — matches sitelink-analytics-dashboard */
+  .topbar{position:sticky;top:0;z-index:20;background:#f7f7f7;
+    border-bottom:1px solid var(--line);width:100%;margin-bottom:22px}
+  .topin{max-width:1200px;margin:0 auto;padding:12px 20px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:11px}
+  .logo{height:26px;width:auto;flex:none;display:none}
+  .wordmark{font-weight:800;font-size:22px;letter-spacing:-1px;line-height:1;color:var(--ink)}
+  .wordmark .ro{color:var(--red)}
+  .brand .div{width:1px;height:20px;background:var(--line)}
+  .brand .ctx{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+  .switch{display:flex;gap:7px;flex-wrap:wrap}
+  .switch button{border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:8px 15px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+  .switch button:hover{border-color:#c4cdd8}
+  .switch button.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 2px 8px rgba(225,27,34,.28)}
+  .spacer{flex:1 1 auto}
+  .btn-print{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;
+    border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn-print:hover{border-color:#c4cdd8}
+  .updated{font-size:11.5px;color:var(--muted);text-align:right;line-height:1.3}
+  .period{font-size:12px;color:var(--muted);margin:16px 2px}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;box-shadow:var(--shadow);margin-bottom:18px}
+  .panel h2{font-size:15px;margin:0 0 3px;font-weight:750}
+  .panel .hint{font-size:12.5px;color:var(--muted);margin:0 0 16px}
+
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px;box-shadow:var(--shadow);
+    position:relative;overflow:hidden}
+  .tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red);opacity:.85}
+  .tile.g::before{background:var(--good)} .tile.a::before{background:var(--amber)} .tile.n::before{background:#aeb6c2}
+  .tile .lab{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .tile .val{font-size:25px;font-weight:800;margin-top:6px;letter-spacing:-.6px}
+  .tile .sub{font-size:12px;color:var(--muted);margin-top:3px}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  th{color:var(--muted);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+  tbody tr:hover{background:#fafbfc}
+
+  .insights{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin:2px 0 20px}
+  .ins{background:var(--card);border:1px solid var(--line);border-left:4px solid #aeb6c2;border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+  .ins.bad{border-left-color:var(--red)} .ins.warn{border-left-color:var(--amber)} .ins.good{border-left-color:var(--good)}
+  .ins .ih{font-weight:800;font-size:14px;letter-spacing:-.2px} .ins .is{font-size:12px;color:var(--muted);margin-top:3px}
+
+  .note{font-size:12.5px;color:var(--muted);background:#f8f9fb;border:1px dashed var(--line);border-radius:10px;padding:10px 12px;margin-top:12px}
+  .error{color:var(--red-d);border:1px solid var(--red);background:var(--red-tint);border-radius:var(--radius);padding:16px 18px}
+  .foot{color:var(--muted);font-size:12px;margin-top:26px;text-align:center;line-height:1.6}
+  .loading{padding:70px;text-align:center;color:var(--muted)}
+
+  @media print{
+    .topbar{position:static}
+    .switch,.btn-print,.spacer{display:none}
+    body{background:#fff}
+    .panel,.tile{box-shadow:none;border:1px solid #d8dde4;break-inside:avoid}
+    .wrap{max-width:none}
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1 id="site-title">Leads Performance Dashboard</h1>
-  <p>Sourced from the sitelink-analytics-dashboard pipeline · SiteLink Consolidated Lead Funnel &amp; Move-Ins/Move-Outs</p>
-</header>
-<main>
-  <div id="tabs" class="tabs"></div>
-  <div id="content">Loading…</div>
-</main>
+<div class="topbar"><div class="topin">
+  <div class="brand">
+    <img class="logo" alt="inospace">
+    <div class="wordmark" id="wm">in<span class="ro">o</span>space</div>
+    <div class="div"></div>
+    <div class="ctx">Leads Performance</div>
+  </div>
+  <div class="switch" id="switch"></div>
+  <div class="spacer"></div>
+  <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
+  <div class="updated" id="updated"></div>
+</div></div>
+<div class="wrap">
+  <div class="period" id="period"></div>
+  <div id="app"><div class="loading">Loading dashboard…</div></div>
+  <div class="foot" id="foot"></div>
+</div>
 <script>
 let DATA = null;
 let ACTIVE_SITE = null;
 
-function badgeClass(label) {
-  if (!label) return 'neutral';
+function bandClass(label) {
+  if (!label) return 'n';
   const bad = ['Concerning', 'Below Target'];
-  return bad.some(b => label.startsWith(b)) ? 'bad' : 'good';
+  return bad.some(b => label.startsWith(b)) ? '' : 'g';
 }
 
-function renderTabs() {
-  const tabsEl = document.getElementById('tabs');
+function buildSwitch() {
+  const sw = document.getElementById('switch');
   const codes = Object.keys(DATA.sites);
-  tabsEl.innerHTML = codes.map(code => {
+  sw.innerHTML = codes.map(code => {
     const site = DATA.sites[code];
-    return `<button class="tab ${code === ACTIVE_SITE ? 'active' : ''}" data-code="${code}">${site.name}</button>`;
+    return `<button data-v="${code}" class="${code === ACTIVE_SITE ? 'active' : ''}">${site.name}</button>`;
   }).join('');
-  tabsEl.querySelectorAll('.tab').forEach(btn => {
-    btn.addEventListener('click', () => {
-      ACTIVE_SITE = btn.dataset.code;
-      renderTabs();
-      renderSite();
-    });
+  sw.querySelectorAll('button').forEach(btn => {
+    btn.onclick = () => {
+      ACTIVE_SITE = btn.dataset.v;
+      sw.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === btn));
+      render();
+    };
   });
 }
 
-function renderSite() {
-  const el = document.getElementById('content');
+function render() {
+  const el = document.getElementById('app');
   const site = DATA.sites[ACTIVE_SITE];
-  document.getElementById('site-title').textContent = site.name + ' — Leads Performance Dashboard';
-
   const cur = site.current_month || {};
+
   const cards = [
     ['Genuine Enquiries', cur.genuine_enquiries, cur.bands && cur.bands.genuine_enquiries],
     ['Conversion Rate', cur.conversion_rate != null ? (cur.conversion_rate * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.conversion_rate],
     ['Move-ins', cur.move_ins, cur.bands && cur.bands.move_ins],
     ['Occupancy % (sqm)', cur.occupancy_sqm_pct != null ? (cur.occupancy_sqm_pct * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.occupancy_sqm],
+    ['Occupancy % (units)', cur.occupancy_units_pct != null ? (cur.occupancy_units_pct * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.occupancy_units],
   ];
 
   const split = cur.genuine_enquiries_split;
-  const splitLabel = (label) => {
-    if (label !== 'Genuine Enquiries' || !split || split.inquiries == null || split.reservations == null) return '';
-    return `<div class="split">${split.inquiries} inquiries · ${split.reservations} reservations</div>`;
+  const subText = (label, band) => {
+    if (label === 'Genuine Enquiries' && split && split.inquiries != null && split.reservations != null) {
+      return `${split.inquiries} inquiries · ${split.reservations} reservations${band ? ' · ' + band : ''}`;
+    }
+    return band || '';
   };
 
-  let html = '<div class="cards">' + cards.map(([label, value, band]) => `
-    <div class="card">
-      <div class="label">${label}</div>
-      <div class="value">${value != null ? value : '—'}</div>
-      ${splitLabel(label)}
-      ${band ? `<span class="badge ${badgeClass(band)}">${band}</span>` : ''}
+  let html = '<div class="tiles">' + cards.map(([label, value, band]) => `
+    <div class="tile ${bandClass(band)}">
+      <div class="lab">${label}</div>
+      <div class="val">${value != null ? value : '—'}</div>
+      <div class="sub">${subText(label, band)}</div>
     </div>
   `).join('') + '</div>';
 
   if (cur.diagnostic_flags && cur.diagnostic_flags.length) {
-    html += '<div class="flags"><h3>⚠ Diagnostic flags</h3><ul>' +
-      cur.diagnostic_flags.map(f => `<li>${f}</li>`).join('') + '</ul></div>';
+    html += '<div class="insights">' + cur.diagnostic_flags.map(f =>
+      `<div class="ins bad"><div class="ih">⚠ Flag</div><div class="is">${f}</div></div>`
+    ).join('') + '</div>';
   }
 
   const hist = site.monthly_history || [];
+  html += '<div class="panel"><h2>Monthly history</h2><p class="hint">' + site.name + ' — rolling monthly view.</p>';
   if (hist.length) {
-    html += '<table><thead><tr><th>Month</th><th>Enquiries</th><th>Conversion Rate</th><th>Move-ins</th><th>Occupancy % (sqm)</th></tr></thead><tbody>';
+    html += '<table><thead><tr><th>Month</th><th>Enquiries</th><th>Conversion Rate</th><th>Move-ins</th><th>Occupancy % (sqm)</th><th>Occupancy % (units)</th></tr></thead><tbody>';
     hist.forEach(m => {
       html += `<tr>
         <td>${m.month || ''}</td>
@@ -120,19 +172,28 @@ function renderSite() {
         <td>${m.conversion_rate != null ? (m.conversion_rate * 100).toFixed(1) + '%' : '—'}</td>
         <td>${m.move_ins != null ? m.move_ins : '—'}</td>
         <td>${m.occupancy_sqm_pct != null ? (m.occupancy_sqm_pct * 100).toFixed(1) + '%' : '—'}</td>
+        <td>${m.occupancy_units_pct != null ? (m.occupancy_units_pct * 100).toFixed(1) + '%' : '—'}</td>
       </tr>`;
     });
     html += '</tbody></table>';
   } else {
-    html += '<p class="note">No monthly history yet - this fills in as the daily pipeline accumulates data, ' +
-      'or once per-site historical backfill is confirmed possible (see README).</p>';
+    html += '<div class="note">No monthly history yet - this fills in as the daily pipeline accumulates data, ' +
+      'or once per-site historical backfill is confirmed possible (see README).</div>';
   }
+  html += '</div>';
 
   el.innerHTML = html;
 }
 
+function initLogo() {
+  const l = document.querySelector('.logo');
+  if (!l) return;
+  l.addEventListener('load', () => { l.style.display = 'block'; const w = document.getElementById('wm'); if (w) w.style.display = 'none'; });
+  l.src = 'inospace-logo.png'; // falls back to the wordmark if this file isn't present
+}
+
 async function load() {
-  const el = document.getElementById('content');
+  const el = document.getElementById('app');
   try {
     const res = await fetch('leads_data.json', { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -144,8 +205,12 @@ async function load() {
     return;
   }
   ACTIVE_SITE = DATA.default_site && DATA.sites[DATA.default_site] ? DATA.default_site : Object.keys(DATA.sites)[0];
-  renderTabs();
-  renderSite();
+  document.getElementById('updated').textContent = 'Updated ' + ((DATA.generated_at || DATA.run_date || '').replace('T', ' ').slice(0, 16));
+  document.getElementById('period').textContent = 'Leads and moves are month-to-date; occupancy is as-of run date · ZAR';
+  document.getElementById('foot').innerHTML = 'Source: sitelink-analytics-dashboard pipeline (Consolidated Lead Funnel &amp; Move-Ins/Move-Outs) · aggregate figures only.<br>inospace — space that works';
+  initLogo();
+  buildSwitch();
+  render();
 }
 load();
 </script>
