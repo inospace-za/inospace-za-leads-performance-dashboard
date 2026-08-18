@@ -250,9 +250,6 @@ function render() {
   ];
 
   const subText = (label, band) => {
-    if (label === 'Leads') {
-      return 'All new inquiries this month (vetted or not)';
-    }
     if (label === 'Occupancy % (units)') {
       const rentablePct = cur.occupancy_units_rentable_pct != null ? (cur.occupancy_units_rentable_pct * 100).toFixed(1) + '%' : null;
       return `${band ? band : ''}${rentablePct ? (band ? ' · ' : '') + rentablePct + ' of rentable units' : ''}`;
