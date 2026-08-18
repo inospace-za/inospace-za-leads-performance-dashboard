@@ -144,6 +144,10 @@ function render() {
     if (label === 'Genuine Enquiries' && split && split.inquiries != null && split.reservations != null) {
       return `${split.inquiries} inquiries · ${split.reservations} reservations${band ? ' · ' + band : ''}`;
     }
+    if (label === 'Occupancy % (units)') {
+      const rentablePct = cur.occupancy_units_rentable_pct != null ? (cur.occupancy_units_rentable_pct * 100).toFixed(1) + '%' : null;
+      return `${band ? band : ''}${rentablePct ? (band ? ' · ' : '') + rentablePct + ' of rentable units' : ''}`;
+    }
     return band || '';
   };
 
