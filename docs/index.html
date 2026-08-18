@@ -202,7 +202,7 @@ function renderCriteria() {
   const bands = DATA.bands_reference || {};
   const thresholds = DATA.diagnostic_thresholds || {};
   const labels = {
-    genuine_enquiries: 'Genuine Enquiries (per month)',
+    genuine_enquiries: 'Genuine Enquiries — reservations placed (per month). "Leads" (inquiries) has no band criteria yet.',
     conversion_rate: 'Conversion Rate',
     move_ins: 'Move-ins (per month)',
     occupancy_sqm: 'Occupancy % (sqm) — also used for the Occupancy % (units) bands',
@@ -241,6 +241,7 @@ function render() {
   const cur = site.current_month || {};
 
   const cards = [
+    ['Leads', cur.leads, null],
     ['Genuine Enquiries', cur.genuine_enquiries, cur.bands && cur.bands.genuine_enquiries],
     ['Conversion Rate', cur.conversion_rate != null ? (cur.conversion_rate * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.conversion_rate],
     ['Move-ins', cur.move_ins, cur.bands && cur.bands.move_ins],
@@ -248,10 +249,9 @@ function render() {
     ['Occupancy % (units)', cur.occupancy_units_pct != null ? (cur.occupancy_units_pct * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.occupancy_units],
   ];
 
-  const split = cur.genuine_enquiries_split;
   const subText = (label, band) => {
-    if (label === 'Genuine Enquiries' && split && split.inquiries != null && split.reservations != null) {
-      return `${split.inquiries} inquiries · ${split.reservations} reservations${band ? ' · ' + band : ''}`;
+    if (label === 'Leads') {
+      return 'Inquiries placed this month';
     }
     if (label === 'Occupancy % (units)') {
       const rentablePct = cur.occupancy_units_rentable_pct != null ? (cur.occupancy_units_rentable_pct * 100).toFixed(1) + '%' : null;
@@ -279,7 +279,8 @@ function render() {
   if (hist.length) {
     const cols = [
       ['month', 'Month'],
-      ['genuine_enquiries', 'Enquiries'],
+      ['leads', 'Leads'],
+      ['genuine_enquiries', 'Genuine Enquiries'],
       ['conversion_rate', 'Conversion Rate'],
       ['move_ins', 'Move-ins'],
       ['occupancy_sqm_pct', 'Occupancy % (sqm)'],
@@ -291,6 +292,7 @@ function render() {
     sortedHistory(hist).forEach(m => {
       html += `<tr>
         <td>${m.month || ''}</td>
+        <td>${m.leads != null ? m.leads : '—'}</td>
         <td>${m.genuine_enquiries != null ? m.genuine_enquiries : '—'}</td>
         <td>${m.conversion_rate != null ? (m.conversion_rate * 100).toFixed(1) + '%' : '—'}</td>
         <td>${m.move_ins != null ? m.move_ins : '—'}</td>
