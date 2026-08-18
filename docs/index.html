@@ -26,9 +26,7 @@
   .topin{max-width:1200px;margin:0 auto;padding:12px 20px;
     display:flex;align-items:center;gap:14px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:11px}
-  .logo{height:26px;width:auto;flex:none;display:none}
-  .wordmark{font-weight:800;font-size:22px;letter-spacing:-1px;line-height:1;color:var(--ink)}
-  .wordmark .ro{color:var(--red)}
+  .logo-svg{height:26px;width:auto;flex:none;display:block}
   .brand .div{width:1px;height:20px;background:var(--line)}
   .brand .ctx{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
   .switch{display:flex;gap:7px;flex-wrap:wrap}
@@ -36,6 +34,12 @@
     padding:8px 15px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
   .switch button:hover{border-color:#c4cdd8}
   .switch button.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 2px 8px rgba(225,27,34,.28)}
+  .switch button.criteria-pill{border-style:dashed;color:var(--muted)}
+  .switch button.criteria-pill.active{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:none}
+  th.sortable{cursor:pointer;user-select:none}
+  th.sortable:hover{color:var(--ink)}
+  .sort-arrow{margin-left:4px;font-size:10px}
+  .sort-arrow.inactive{opacity:.35}
   .spacer{flex:1 1 auto}
   .btn-print{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;
     border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
@@ -85,8 +89,35 @@
 <body>
 <div class="topbar"><div class="topin">
   <div class="brand">
-    <img class="logo" alt="inospace">
-    <div class="wordmark" id="wm">in<span class="ro">o</span>space</div>
+    <svg class="logo-svg" viewBox="0 0 409.155 68.13" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="inospace">
+	<path fill="#DA2028" d="M103.124,44.21c-9.547,0-16.471-7.344-16.471-16.47c0-9.127,6.924-16.47,16.471-16.47
+		c9.547,0,16.471,7.343,16.471,16.47C119.595,36.867,112.671,44.21,103.124,44.21 M103.124,0c-15.32,0-27.74,12.419-27.74,27.74
+		c0,15.32,12.42,27.74,27.74,27.74c15.321,0,27.74-12.42,27.74-27.74C130.864,12.419,118.445,0,103.124,0"/>
+	<path fill="#14161a" d="M140.863,38.089c4.122,4.223,10.917,7.498,16.933,7.498c6.684,0,10.694-3.592,10.694-6.443
+		c0-3.379-2.785-5.174-7.018-5.913l-6.573-1.162c-15.15-2.641-19.383-7.286-19.383-14.572c0-8.66,7.686-16.685,21.166-16.685
+		c7.463,0,14.036,2.112,21.388,7.075l-6.573,7.709c-5.681-4.541-10.693-5.702-14.481-5.702c-5.012,0-9.914,2.323-9.914,6.44
+		c0,3.063,2.562,4.646,7.018,5.385l11.697,2.113c9.581,1.689,14.26,6.02,14.26,13.624c0,7.496-6.462,17.211-22.838,17.211
+		c-9.134,0-16.932-3.062-24.284-8.977L140.863,38.089z"/>
+	<path fill="#14161a" d="M212.542,43.728c-9.267,0-15.988-7.129-15.988-15.988c0-8.86,6.722-15.987,15.988-15.987
+		S228.53,18.88,228.53,27.74C228.53,36.599,221.809,43.728,212.542,43.728 M212.542,0.813c-14.861,0-26.91,12.039-26.926,26.898
+		h-0.001V68.13h10.938V49.406c4.473,3.305,10.001,5.262,15.988,5.262c14.872,0,26.928-12.057,26.928-26.927
+		C239.47,12.869,227.414,0.813,212.542,0.813"/>
+	<path fill="#14161a" d="M271.183,43.728c-9.268,0-15.988-7.129-15.988-15.989c0-8.858,6.721-15.987,15.988-15.987
+		c9.266,0,15.986,7.129,15.986,15.987C287.169,36.599,280.448,43.728,271.183,43.728 M298.106,27.619
+		c-0.066-14.815-12.094-26.806-26.924-26.806c-14.871,0-26.928,12.056-26.928,26.926c0,14.872,12.057,26.928,26.928,26.928
+		c5.986,0,11.516-1.957,15.986-5.262v5.262h10.939V27.619H298.106z"/>
+	<polygon fill="#14161a" points="0,8.624 0,54.667 10.939,54.667 10.939,2.648 	"/>
+	<path fill="#14161a" d="M408.886,31.522c0.174-1.236,0.27-2.498,0.27-3.783c0-14.87-12.055-26.926-26.926-26.926
+		c-14.873,0-26.928,12.056-26.928,26.926c0,14.872,12.055,26.928,26.928,26.928c10.281,0,19.213-5.764,23.75-14.234l-9.535-5.209
+		c-2.582,5.064-7.783,8.504-14.215,8.504c-9.268,0-15.988-7.129-15.988-15.989c0-8.858,6.721-15.987,15.988-15.987
+		c7.326,0,13.045,4.464,15.127,10.708h-16.041l-7.064,9.062h23.525H408.886z"/>
+	<path fill="#14161a" d="M69.934,26.056c0-13.94-11.302-25.243-25.244-25.243S19.445,12.115,19.445,26.056v0.002v28.61h10.939
+		v-28.61v-0.002c0-7.926,6.014-14.305,14.305-14.305s14.305,6.379,14.305,14.305v28.612h10.939V26.056z"/>
+	<path fill="#14161a" d="M342.907,36.724c-2.787,4.229-7.559,7.004-13.332,7.004c-9.266,0-15.986-7.129-15.986-15.989
+		c0-8.858,6.721-15.986,15.986-15.986c5.773,0,10.545,2.773,13.332,7.003l9.533-5.208c-4.752-7.639-13.205-12.734-22.865-12.734
+		c-14.871,0-26.926,12.055-26.926,26.926c0,14.872,12.055,26.928,26.926,26.928c9.66,0,18.113-5.096,22.865-12.736L342.907,36.724z"
+		/>
+    </svg>
     <div class="div"></div>
     <div class="ctx">Leads Performance</div>
   </div>
@@ -103,6 +134,9 @@
 <script>
 let DATA = null;
 let ACTIVE_SITE = null;
+let VIEW_MODE = 'site'; // 'site' | 'criteria'
+let SORT_COL = 'month';
+let SORT_DIR = 'desc'; // most recent month first by default
 
 function bandClass(label) {
   if (!label) return 'n';
@@ -110,23 +144,94 @@ function bandClass(label) {
   return bad.some(b => label.startsWith(b)) ? '' : 'g';
 }
 
+function sortHistory(col) {
+  if (SORT_COL === col) {
+    SORT_DIR = SORT_DIR === 'asc' ? 'desc' : 'asc';
+  } else {
+    SORT_COL = col;
+    SORT_DIR = 'asc';
+  }
+  render();
+}
+
+function sortArrow(col) {
+  if (SORT_COL !== col) return '<span class="sort-arrow inactive">↕</span>';
+  return SORT_DIR === 'asc' ? '<span class="sort-arrow">↑</span>' : '<span class="sort-arrow">↓</span>';
+}
+
+function sortedHistory(hist) {
+  const rows = hist.slice();
+  const dir = SORT_DIR === 'asc' ? 1 : -1;
+  rows.sort((a, b) => {
+    let av = a[SORT_COL], bv = b[SORT_COL];
+    if (av == null && bv == null) return 0;
+    if (av == null) return 1;  // nulls always sort last, regardless of direction
+    if (bv == null) return -1;
+    if (typeof av === 'string') return av.localeCompare(bv) * dir;
+    return (av - bv) * dir;
+  });
+  return rows;
+}
+
 function buildSwitch() {
   const sw = document.getElementById('switch');
   const codes = Object.keys(DATA.sites);
   sw.innerHTML = codes.map(code => {
     const site = DATA.sites[code];
-    return `<button data-v="${code}" class="${code === ACTIVE_SITE ? 'active' : ''}">${site.name}</button>`;
-  }).join('');
+    return `<button data-v="${code}" class="${VIEW_MODE === 'site' && code === ACTIVE_SITE ? 'active' : ''}">${site.name}</button>`;
+  }).join('') + `<button data-v="__criteria__" class="criteria-pill ${VIEW_MODE === 'criteria' ? 'active' : ''}">📋 Criteria</button>`;
   sw.querySelectorAll('button').forEach(btn => {
     btn.onclick = () => {
-      ACTIVE_SITE = btn.dataset.v;
+      if (btn.dataset.v === '__criteria__') {
+        VIEW_MODE = 'criteria';
+      } else {
+        VIEW_MODE = 'site';
+        ACTIVE_SITE = btn.dataset.v;
+      }
       sw.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === btn));
       render();
     };
   });
 }
 
+function renderCriteria() {
+  const bands = DATA.bands_reference || {};
+  const thresholds = DATA.diagnostic_thresholds || {};
+  const labels = {
+    genuine_enquiries: 'Genuine Enquiries (per month)',
+    conversion_rate: 'Conversion Rate',
+    move_ins: 'Move-ins (per month)',
+    occupancy_sqm: 'Occupancy % (sqm) — also used for the Occupancy % (units) bands',
+  };
+  const fmtThreshold = (key, v) => {
+    if (key === 'conversion_rate' || key === 'occupancy_sqm') return (v * 100).toFixed(0) + '%';
+    return v;
+  };
+  let html = '<div class="panel"><h2>KPI band criteria</h2><p class="hint">' +
+    (DATA.bands_note || 'Same KPI bands apply to every site.') + '</p>';
+  Object.entries(bands).forEach(([key, rows]) => {
+    html += `<h3 style="margin:16px 0 6px;font-size:13px">${labels[key] || key}</h3>`;
+    html += '<table><thead><tr><th>Threshold</th><th>Band</th></tr></thead><tbody>';
+    rows.forEach(([threshold, label], i) => {
+      const nextThreshold = rows[i + 1] ? fmtThreshold(key, rows[i + 1][0]) : null;
+      const rangeText = nextThreshold ? `≥ ${fmtThreshold(key, threshold)} and < ${nextThreshold}` : `≥ ${fmtThreshold(key, threshold)}`;
+      html += `<tr><td>${rangeText}</td><td>${label}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  });
+  if (Object.keys(thresholds).length) {
+    html += '<h3 style="margin:16px 0 6px;font-size:13px">Diagnostic flag triggers</h3>';
+    html += `<div class="note">
+      "Insufficient demand generation" fires when Genuine Enquiries is between ${thresholds.low_demand_min} and ${thresholds.low_demand_max}.<br>
+      "Possible price / product / sales issue" fires when Genuine Enquiries is between ${thresholds.price_issue_enq_min} and ${thresholds.price_issue_enq_max} but Move-ins is below ${thresholds.price_issue_moveins_max}.
+    </div>`;
+  }
+  html += '</div>';
+  document.getElementById('app').innerHTML = html;
+}
+
 function render() {
+  if (VIEW_MODE === 'criteria') { renderCriteria(); return; }
   const el = document.getElementById('app');
   const site = DATA.sites[ACTIVE_SITE];
   const cur = site.current_month || {};
@@ -166,10 +271,20 @@ function render() {
   }
 
   const hist = site.monthly_history || [];
-  html += '<div class="panel"><h2>Monthly history</h2><p class="hint">' + site.name + ' — rolling monthly view.</p>';
+  html += '<div class="panel"><h2>Monthly history</h2><p class="hint">' + site.name + ' — rolling monthly view. Click a column header to sort.</p>';
   if (hist.length) {
-    html += '<table><thead><tr><th>Month</th><th>Enquiries</th><th>Conversion Rate</th><th>Move-ins</th><th>Occupancy % (sqm)</th><th>Occupancy % (units)</th></tr></thead><tbody>';
-    hist.forEach(m => {
+    const cols = [
+      ['month', 'Month'],
+      ['genuine_enquiries', 'Enquiries'],
+      ['conversion_rate', 'Conversion Rate'],
+      ['move_ins', 'Move-ins'],
+      ['occupancy_sqm_pct', 'Occupancy % (sqm)'],
+      ['occupancy_units_pct', 'Occupancy % (units)'],
+    ];
+    html += '<table><thead><tr>' + cols.map(([key, label]) =>
+      `<th class="sortable" onclick="sortHistory('${key}')">${label}${sortArrow(key)}</th>`
+    ).join('') + '</tr></thead><tbody>';
+    sortedHistory(hist).forEach(m => {
       html += `<tr>
         <td>${m.month || ''}</td>
         <td>${m.genuine_enquiries != null ? m.genuine_enquiries : '—'}</td>
@@ -189,13 +304,6 @@ function render() {
   el.innerHTML = html;
 }
 
-function initLogo() {
-  const l = document.querySelector('.logo');
-  if (!l) return;
-  l.addEventListener('load', () => { l.style.display = 'block'; const w = document.getElementById('wm'); if (w) w.style.display = 'none'; });
-  l.src = 'inospace-logo.png'; // falls back to the wordmark if this file isn't present
-}
-
 async function load() {
   const el = document.getElementById('app');
   try {
@@ -212,7 +320,6 @@ async function load() {
   document.getElementById('updated').textContent = 'Updated ' + ((DATA.generated_at || DATA.run_date || '').replace('T', ' ').slice(0, 16));
   document.getElementById('period').textContent = 'Leads and moves are month-to-date; occupancy is as-of run date · ZAR';
   document.getElementById('foot').innerHTML = 'Source: sitelink-analytics-dashboard pipeline (Consolidated Lead Funnel &amp; Move-Ins/Move-Outs) · aggregate figures only.<br>inospace — space that works';
-  initLogo();
   buildSwitch();
   render();
 }
