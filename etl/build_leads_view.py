@@ -1,10 +1,21 @@
 """
-Transform _incoming/data.json + _incoming/history.json (+ optional
-_incoming/historical_monthly.json), all fetched from the source repo, into
-site/leads_data.json: a CBD-only-by-default, leads-performance-focused view
-scored against agreed KPI bands, with a rolling 3-month history per site.
+Transform _incoming/data.json (fetched from the source repo) into
+docs/leads_data.json: a CBD-only-by-default, leads-performance-focused view
+scored against agreed KPI bands.
 
-Schema confirmed against real samples (2026-08-14 / 2026-08-17):
+Monthly history (2026-08-18 onward): tracked via a self-accumulating, committed
+archive at docs/leads_history_archive.json - NOT backfilled or blended from any
+historical source. Every day's run upserts the CURRENT month's entry in the
+archive with the latest month-to-date figures; once the month closes and a new
+current month begins, that entry is never touched again and becomes the real,
+final historical value for that month. History starts empty and grows by
+exactly one real month per site as time passes - no fabrication, no guessing,
+no blending mismatched sources. (An earlier version tried backfilling May-Jul
+2026 from a manually-built file and separately from the source repo's own
+historical_monthly.json; the two disagreed for at least one site/month, so
+both were dropped in favour of this simpler, fully-real approach.)
+
+Schema confirmed against real samples (2026-08-14 / 2026-08-18):
   data["by_site"][site_id]["leads"]        -> placed_inquiries, placed_reservations, placed_total,
                                                converted_to_lease, conversion_pct (0-100)
   data["by_site"][site_id]["moveins"/"moveouts"/"net_moves"]
@@ -16,26 +27,11 @@ Schema confirmed against real samples (2026-08-14 / 2026-08-17):
     avg_std_rate, gross_potential, gross_occupied}. Used only to compute the
     SUPPLEMENTARY "occupancy_units_rentable_pct" figure (see _rentable_occ_pct_units()
     below) - the headline "occupancy_units_pct" stays on the same all-units basis as
-    "occupancy_sqm_pct" so the two headline metrics remain directly comparable
-    (per 2026-08-18 discussion: reported units%/sqm% must share the same basis).
-  history.json                              -> top-level list of daily snapshots:
-    {date, portfolio_occ_pct, portfolio_units_occupied, by_site_occ_pct: {site_id: pct},
-     leads_placed, leases_signed, net_moves}
-  historical_monthly.json (optional, one-time backfill)   -> {
-     months: [...], by_site: {site_id: {"YYYY-MM": {moveins, moveouts, transfers,
-     leads_placed, leases_signed, cancelled}}}
-  }
+    "occupancy_sqm_pct" so the two headline metrics remain directly comparable.
 
-Known, real gaps in the source data (not fabricated around):
-  - Per-site history is ONLY reliable for occupancy % (by_site_occ_pct, unit-based)
-    from 2026-07-02 onward (when the daily pipeline started).
-  - historical_monthly.json covers real per-site leads/moves for Jan-Jun 2026, but
-    has NO occupancy figures at all.
-  - There is a real gap for any month that is in neither source (e.g. per-site leads
-    for July 2026): those cells are left as null / rendered as "-".
-  - The inquiries-vs-reservations split (placed_inquiries/placed_reservations) is only
-    available for the live current month. Neither historical_monthly.json nor
-    history.json (yet) carries this split, so historical rows leave it null.
+"leads" (placed_inquiries) and "genuine_enquiries" (placed_reservations) are two
+distinct metrics as of 2026-08-18 - previously a single combined "genuine_enquiries"
+(placed_total) figure.
 
 Usage:
     python etl/build_leads_view.py
@@ -46,6 +42,9 @@ from datetime import date
 
 INCOMING_DIR = "_incoming"
 OUT_PATH = "docs/leads_data.json"
+ARCHIVE_PATH = "docs/leads_history_archive.json"  # self-accumulating, committed monthly
+                                                    # archive - see load_archive()/
+                                                    # update_archive_for_site() below
 
 CBD_SITE_CODE = "58995"  # site id for CBD / The Exchange (sLocationCode L004)
 
@@ -55,8 +54,6 @@ KNOWN_SITES = {
     "58700": "Salt River",
     "58995": "CBD - The Exchange",
 }
-
-MONTHS_OF_HISTORY = 4  # widened 2026-08-18 to bring May 2026 into view alongside Jun/Jul/Aug
 
 # ---------------------------------------------------------------------------
 # KPI bands - editable. Each list is (min_threshold, label), ascending.
@@ -156,36 +153,26 @@ def _rentable_occ_pct_units(categories_for_site):
 def load_incoming():
     with open(os.path.join(INCOMING_DIR, "data.json")) as f:
         data = json.load(f)
-    with open(os.path.join(INCOMING_DIR, "history.json")) as f:
-        history = json.load(f)
-    historical_monthly = None
-    hm_path = os.path.join(INCOMING_DIR, "historical_monthly.json")
-    # historical_monthly.json, when present, is fetched by fetch_source_data.py from
-    # sitelink-analytics-dashboard's own site/historical_monthly.json (the source
-    # pipeline's official one-time backfill). That is treated as authoritative -
-    # no local override. (2026-08-18: a manually-built data/historical_monthly.json
-    # was tried here as a fallback and found to disagree with the official backfill
-    # for at least one site/month; removed in favour of trusting the source.)
-    if os.path.exists(hm_path):
-        with open(hm_path) as f:
-            historical_monthly = json.load(f)
-    return data, history, historical_monthly
+    return data
 
 
 def extract_site_current_month(data, site_code):
     site = data.get("by_site", {}).get(site_code, {})
     leads = site.get("leads", {})
 
-    # 2026-08-18: split what used to be one combined "genuine_enquiries" (placed_total)
-    # into two distinct metrics per direct instruction:
-    #   leads              = placed_inquiries    (first-contact enquiries)
-    #   genuine_enquiries  = placed_reservations  (people who've committed to reserving -
-    #                        the more qualified/"genuine" signal)
+    # 2026-08-18: split what used to be one combined "genuine_enquiries" figure into
+    # two distinct metrics, per direct clarification of the real business definitions:
+    #   leads              = placed_total         (ALL new inquiries - every contact,
+    #                        vetted or not, is a lead)
+    #   genuine_enquiries  = placed_reservations   (the subset the team has vetted and
+    #                        confirmed has real intent/commitment to rent - i.e. once a
+    #                        lead is confirmed genuine, SiteLink records it as a
+    #                        reservation, hence placed_reservations is the right field)
     # Only available for the live current month - the source's historical backfill only
     # ever has one combined "leads_placed" figure, never a real inquiries/reservations
     # split, so historical months leave both of these blank rather than guessing which
     # one the combined number represents.
-    leads_count = leads.get("placed_inquiries")
+    leads_count = leads.get("placed_total")
     enquiries = leads.get("placed_reservations")
     conversions = leads.get("converted_to_lease")
     move_ins = site.get("moveins")
@@ -247,103 +234,63 @@ def _daily_occupancy_by_month(history, site_code):
     return {m: sum(v) / len(v) for m, v in buckets.items()}
 
 
-def _recent_month_keys(run_date_str, n):
-    """Last n calendar months as 'YYYY-MM' strings, oldest first, ending at
-    the month of run_date_str (or today if not parseable)."""
-    try:
-        y, m, _ = [int(x) for x in run_date_str.split("-")]
-        anchor = date(y, m, 1)
-    except Exception:
-        today = date.today()
-        anchor = date(today.year, today.month, 1)
-    keys = []
-    y, m = anchor.year, anchor.month
-    for _ in range(n):
-        keys.append(f"{y:04d}-{m:02d}")
-        m -= 1
-        if m == 0:
-            m = 12
-            y -= 1
-    return list(reversed(keys))
+def load_archive():
+    """The self-accumulating monthly archive - see module docstring. Starts empty;
+    grows by exactly one real entry per site per calendar month, going forward
+    from 2026-08-18."""
+    if os.path.exists(ARCHIVE_PATH):
+        with open(ARCHIVE_PATH) as f:
+            return json.load(f)
+    return {}
 
 
-def extract_site_recent_months(data, history, historical_monthly, site_code, current_month_data, run_date_str):
-    """
-    Builds the last MONTHS_OF_HISTORY calendar months for one site, merging:
-      - the live current month (real, from data.json) for the most recent month
-      - historical_monthly.json (real leads/moves, Jan-Jun 2026, no occupancy) where available
-      - daily history.json's averaged occupancy % where available
-    Cells with no real source are left as None (rendered as "-"), never fabricated.
-    """
-    month_keys = _recent_month_keys(run_date_str, MONTHS_OF_HISTORY)
-    current_month_key = month_keys[-1]
-    daily_occ_by_month = _daily_occupancy_by_month(history, site_code)
-    hm_by_month = ((historical_monthly or {}).get("by_site", {}) or {}).get(site_code, {})
+def save_archive(archive):
+    os.makedirs(os.path.dirname(ARCHIVE_PATH), exist_ok=True)
+    with open(ARCHIVE_PATH, "w") as f:
+        json.dump(archive, f, indent=2)
 
+
+def update_archive_for_site(archive, site_code, current_month_key, current_month_data):
+    """Upserts today's live current-month figures into the archive under the
+    current month's key. Run daily: every day's run overwrites that SAME month's
+    entry with the latest month-to-date figures, so the entry naturally settles
+    on its final value once the month closes and a new current_month_key begins -
+    no separate "close out the month" step needed. Past months' entries are never
+    touched again once the key moves on, so they stay frozen at their real,
+    actually-observed final value."""
+    site_archive = archive.setdefault(site_code, {})
+    site_archive[current_month_key] = {
+        "leads": current_month_data["leads"],
+        "genuine_enquiries": current_month_data["genuine_enquiries"],
+        "conversions": current_month_data["conversions"],
+        "conversion_rate": current_month_data["conversion_rate"],
+        "move_ins": current_month_data["move_ins"],
+        "move_outs": current_month_data["move_outs"],
+        "occupancy_sqm_pct": current_month_data["occupancy_sqm_pct"],
+        "occupancy_units_pct": current_month_data["occupancy_units_pct"],
+        "occupancy_units_rentable_pct": current_month_data["occupancy_units_rentable_pct"],
+    }
+
+
+def monthly_history_from_archive(archive, site_code, current_month_key, max_months=12):
+    """Real monthly history is whatever has actually accumulated in the archive
+    for this site, oldest first, capped at max_months. No backfill, no blending,
+    no fabrication - this only ever contains months this pipeline has itself
+    observed since it started tracking (2026-08-18 onward)."""
+    site_archive = archive.get(site_code, {})
+    months = sorted(site_archive.keys())[-max_months:]
     rows = []
-    for month in month_keys:
-        if month == current_month_key:
-            row = {
-                "month": month,
-                "leads": current_month_data["leads"],
-                "genuine_enquiries": current_month_data["genuine_enquiries"],
-                "conversions": current_month_data["conversions"],
-                "conversion_rate": current_month_data["conversion_rate"],
-                "move_ins": current_month_data["move_ins"],
-                "move_outs": current_month_data["move_outs"],
-                "occupancy_sqm_pct": current_month_data["occupancy_sqm_pct"],
-                "occupancy_units_pct": current_month_data["occupancy_units_pct"],
-                "occupancy_units_rentable_pct": current_month_data["occupancy_units_rentable_pct"],
-                "source": "live_current_month",
-            }
-        else:
-            hm = hm_by_month.get(month)
-            # hm's "leads_placed" is a single COMBINED figure (inquiries + reservations) -
-            # the source's historical backfill has never carried a real inquiries-vs-
-            # reservations split. Since 2026-08-18 "leads" and "genuine_enquiries" are two
-            # distinct metrics (placed_inquiries vs placed_reservations respectively), and
-            # attributing the combined historical number to either would misrepresent it -
-            # so both are left blank for historical months. The combined figure is still
-            # used for conversion_rate below, since that ratio (leases signed vs total lead
-            # activity) remains a meaningful, real number on its own.
-            combined_placed = hm.get("leads_placed") if hm else None
-            conversions = hm.get("leases_signed") if hm else None
-            move_ins = hm.get("moveins") if hm else None
-            move_outs = hm.get("moveouts") if hm else None
-            conversion_rate = (
-                (conversions / combined_placed) if combined_placed else None
-            ) if (combined_placed is not None and conversions is not None) else None
-
-            avg_occ = daily_occ_by_month.get(month)
-            occupancy_units_pct = (avg_occ / 100) if avg_occ is not None else None
-
-            sources = []
-            if hm:
-                sources.append("historical_monthly_backfill")
-            if avg_occ is not None:
-                sources.append("daily_history_occupancy_avg")
-
-            row = {
-                "month": month,
-                "leads": None,  # see comment above - no real split available historically
-                "genuine_enquiries": None,
-                "conversions": conversions,
-                "conversion_rate": conversion_rate,
-                "move_ins": move_ins,
-                "move_outs": move_outs,
-                "occupancy_sqm_pct": None,  # never available historically, only units-based is
-                "occupancy_units_pct": occupancy_units_pct,
-                "source": "+".join(sources) if sources else "no_data",
-            }
+    for month in months:
+        row = dict(site_archive[month])
+        row["month"] = month
+        row["source"] = "live_current_month" if month == current_month_key else "tracked_archive"
         rows.append(row)
     return rows
 
 
-def build_site(data, history, historical_monthly, site_code, site_name, run_date_str):
-    current = extract_site_current_month(data, site_code)
-    monthly_history = extract_site_recent_months(
-        data, history, historical_monthly, site_code, current, run_date_str
-    )
+def build_site(archive, site_code, site_name, current_month_key):
+    current = archive[site_code][current_month_key].copy()
+    monthly_history = monthly_history_from_archive(archive, site_code, current_month_key)
 
     current["bands"] = {
         "genuine_enquiries": band_label(current["genuine_enquiries"], "genuine_enquiries"),
@@ -373,11 +320,22 @@ def build_site(data, history, historical_monthly, site_code, site_name, run_date
 
 
 def build():
-    data, history, historical_monthly = load_incoming()
+    data = load_incoming()
     run_date_str = (data.get("meta") or {}).get("run_date", "")
+    try:
+        current_month_key = "-".join(run_date_str.split("-")[:2])
+    except Exception:
+        today = date.today()
+        current_month_key = f"{today.year:04d}-{today.month:02d}"
+
+    archive = load_archive()
+    for code in KNOWN_SITES:
+        current = extract_site_current_month(data, code)
+        update_archive_for_site(archive, code, current_month_key, current)
+    save_archive(archive)
 
     sites_out = {
-        code: build_site(data, history, historical_monthly, code, name, run_date_str)
+        code: build_site(archive, code, name, current_month_key)
         for code, name in KNOWN_SITES.items()
     }
 
@@ -391,11 +349,13 @@ def build():
         "diagnostic_thresholds": DIAGNOSTIC_THRESHOLDS,
         "bands_note": "Same KPI bands apply to every site initially - split per site later if needed.",
         "history_note": (
-            "Monthly history blends three sources: the live current month (real), "
-            "a one-time Jan-Jun 2026 backfill of real per-site leads/moves (no occupancy "
-            "in that source), and the daily pipeline's per-site occupancy average from "
-            "2026-07-02 onward (no per-site leads in that source). Cells with no real "
-            "source are left blank rather than estimated."
+            "Monthly history is tracked from 2026-08-18 onward only - no backfilled or "
+            "blended historical data. Each site's history grows by one real month at a "
+            "time as the daily pipeline runs: every day's run updates the current month's "
+            "entry in the committed archive (docs/leads_history_archive.json) with the "
+            "latest month-to-date figures, and that entry is never touched again once the "
+            "month closes and a new one begins. Months before tracking started simply "
+            "aren't in the history - nothing is backfilled or estimated."
         ),
     }
 
