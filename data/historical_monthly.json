@@ -1,0 +1,62 @@
+{
+  "_note": "Real one-time backfill built 2026-08-18 from SiteLink Mgmt InquiryTracking + Unit MoveInsAndMoveOuts exports (Maitland + Salt River only - no CBD file was provided, so CBD has no backfill and stays blank for these months, as before). leads_placed = count of Inquiry Tracking rows by dPlaced month (raw row count, no genuine/junk filtering, matching the live pipeline's own no-manual-overlay rule). moveins/moveouts/transfers = Unit MoveInsAndMoveOuts rows flagged accordingly, by MoveDate month. cancelled = Inquiry Tracking rows by dCancelled month. leases_signed = same count as moveins for that month: the export has no distinct 'date lease was signed' field, and every completed move-in in this data represents an executed lease, so moveins is used as the direct proxy rather than inventing a different number.",
+  "months": [
+    "2026-05",
+    "2026-06",
+    "2026-07"
+  ],
+  "by_site": {
+    "56788": {
+      "2026-05": {
+        "moveins": 7,
+        "moveouts": 10,
+        "transfers": 0,
+        "leads_placed": 30,
+        "leases_signed": 7,
+        "cancelled": 28
+      },
+      "2026-06": {
+        "moveins": 9,
+        "moveouts": 5,
+        "transfers": 0,
+        "leads_placed": 35,
+        "leases_signed": 9,
+        "cancelled": 22
+      },
+      "2026-07": {
+        "moveins": 14,
+        "moveouts": 2,
+        "transfers": 4,
+        "leads_placed": 44,
+        "leases_signed": 14,
+        "cancelled": 31
+      }
+    },
+    "58700": {
+      "2026-05": {
+        "moveins": 2,
+        "moveouts": 0,
+        "transfers": 0,
+        "leads_placed": 73,
+        "leases_signed": 2,
+        "cancelled": 50
+      },
+      "2026-06": {
+        "moveins": 18,
+        "moveouts": 0,
+        "transfers": 1,
+        "leads_placed": 46,
+        "leases_signed": 18,
+        "cancelled": 56
+      },
+      "2026-07": {
+        "moveins": 22,
+        "moveouts": 3,
+        "transfers": 1,
+        "leads_placed": 39,
+        "leases_signed": 22,
+        "cancelled": 26
+      }
+    }
+  }
+}
