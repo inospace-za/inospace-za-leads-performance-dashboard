@@ -202,10 +202,10 @@ function renderCriteria() {
   const bands = DATA.bands_reference || {};
   const thresholds = DATA.diagnostic_thresholds || {};
   const labels = {
-    genuine_enquiries: 'Genuine Enquiries — reservations placed (per month). "Leads" (inquiries) has no band criteria yet.',
+    genuine_enquiries: 'Reservations (= Genuine Enquiries — vetted, confirmed intent to rent) per month. "Leads" (all inquiries) has no band criteria yet.',
     conversion_rate: 'Conversion Rate',
     move_ins: 'Move-ins (per month)',
-    occupancy_sqm: 'Occupancy % (sqm) — also used for the Occupancy % (units) bands',
+    occupancy_sqm: 'Occupancy % (sqm, all area) — same thresholds also used for Occupancy % (units, rentable units only); the two are no longer on the same basis, only the same band cutoffs',
   };
   const fmtThreshold = (key, v) => {
     if (key === 'conversion_rate' || key === 'occupancy_sqm') return (v * 100).toFixed(0) + '%';
@@ -242,7 +242,7 @@ function render() {
 
   const cards = [
     ['Leads', cur.leads, null],
-    ['Genuine Enquiries', cur.genuine_enquiries, cur.bands && cur.bands.genuine_enquiries],
+    ['Reservations', cur.genuine_enquiries, cur.bands && cur.bands.genuine_enquiries],
     ['Conversion Rate', cur.conversion_rate != null ? (cur.conversion_rate * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.conversion_rate],
     ['Move-ins', cur.move_ins, cur.bands && cur.bands.move_ins],
     ['Occupancy % (sqm)', cur.occupancy_sqm_pct != null ? (cur.occupancy_sqm_pct * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.occupancy_sqm],
@@ -250,9 +250,11 @@ function render() {
   ];
 
   const subText = (label, band) => {
+    if (label === 'Reservations') {
+      return `Genuine Enquiries${band ? ' · ' + band : ''}`;
+    }
     if (label === 'Occupancy % (units)') {
-      const rentablePct = cur.occupancy_units_rentable_pct != null ? (cur.occupancy_units_rentable_pct * 100).toFixed(1) + '%' : null;
-      return `${band ? band : ''}${rentablePct ? (band ? ' · ' : '') + rentablePct + ' of rentable units' : ''}`;
+      return `${band || ''}${band ? ' · ' : ''}rentable units only`;
     }
     return band || '';
   };
@@ -277,7 +279,7 @@ function render() {
     const cols = [
       ['month', 'Month'],
       ['leads', 'Leads'],
-      ['genuine_enquiries', 'Genuine Enquiries'],
+      ['genuine_enquiries', 'Reservations'],
       ['conversion_rate', 'Conversion Rate'],
       ['move_ins', 'Move-ins'],
       ['occupancy_sqm_pct', 'Occupancy % (sqm)'],
