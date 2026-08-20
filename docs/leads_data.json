@@ -1,41 +1,39 @@
 {
   "generated_note": "Built by leads-performance-dashboard/etl/build_leads_view.py",
-  "generated_at": "2026-08-17T05:48:09",
-  "run_date": "2026-08-17",
+  "generated_at": "2026-08-20T07:24:34",
+  "run_date": "2026-08-20",
   "sites": {
     "56788": {
       "name": "Maitland",
       "site_code": "56788",
       "current_month": {
-        "leads": 3,
+        "leads": 5,
         "genuine_enquiries": 0,
         "conversions": 2,
-        "conversion_rate": 0.667,
+        "conversion_rate": 0.4,
         "move_ins": 2,
         "move_outs": 0,
         "occupancy_sqm_pct": 0.5720000000000001,
-        "occupancy_units_pct": 0.462,
-        "occupancy_units_rentable_pct": 0.991,
+        "occupancy_units_pct": 0.991,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
           "conversion_rate": "Excellent",
           "move_ins": "Concerning",
           "occupancy_sqm": "Exceptional",
-          "occupancy_units": "Very Good"
+          "occupancy_units": "Exceptional"
         },
         "diagnostic_flags": []
       },
       "monthly_history": [
         {
-          "leads": 3,
+          "leads": 5,
           "genuine_enquiries": 0,
           "conversions": 2,
-          "conversion_rate": 0.667,
+          "conversion_rate": 0.4,
           "move_ins": 2,
           "move_outs": 0,
           "occupancy_sqm_pct": 0.5720000000000001,
-          "occupancy_units_pct": 0.462,
-          "occupancy_units_rentable_pct": 0.991,
+          "occupancy_units_pct": 0.991,
           "month": "2026-08",
           "source": "live_current_month",
           "bands": {
@@ -43,7 +41,7 @@
             "conversion_rate": "Excellent",
             "move_ins": "Concerning",
             "occupancy_sqm": "Exceptional",
-            "occupancy_units": "Very Good"
+            "occupancy_units": "Exceptional"
           }
         }
       ]
@@ -52,43 +50,41 @@
       "name": "Salt River",
       "site_code": "58700",
       "current_month": {
-        "leads": 4,
-        "genuine_enquiries": 2,
-        "conversions": 1,
-        "conversion_rate": 0.25,
-        "move_ins": 1,
+        "leads": 9,
+        "genuine_enquiries": 5,
+        "conversions": 2,
+        "conversion_rate": 0.222,
+        "move_ins": 2,
         "move_outs": 1,
-        "occupancy_sqm_pct": 0.511,
-        "occupancy_units_pct": 0.382,
-        "occupancy_units_rentable_pct": 0.848,
+        "occupancy_sqm_pct": 0.517,
+        "occupancy_units_pct": 0.87,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
-          "conversion_rate": "Acceptable",
+          "conversion_rate": "Below Target",
           "move_ins": "Concerning",
           "occupancy_sqm": "Exceptional",
-          "occupancy_units": "Good"
+          "occupancy_units": "Exceptional"
         },
         "diagnostic_flags": []
       },
       "monthly_history": [
         {
-          "leads": 4,
-          "genuine_enquiries": 2,
-          "conversions": 1,
-          "conversion_rate": 0.25,
-          "move_ins": 1,
+          "leads": 9,
+          "genuine_enquiries": 5,
+          "conversions": 2,
+          "conversion_rate": 0.222,
+          "move_ins": 2,
           "move_outs": 1,
-          "occupancy_sqm_pct": 0.511,
-          "occupancy_units_pct": 0.382,
-          "occupancy_units_rentable_pct": 0.848,
+          "occupancy_sqm_pct": 0.517,
+          "occupancy_units_pct": 0.87,
           "month": "2026-08",
           "source": "live_current_month",
           "bands": {
             "genuine_enquiries": "Concerning - insufficient demand generation",
-            "conversion_rate": "Acceptable",
+            "conversion_rate": "Below Target",
             "move_ins": "Concerning",
             "occupancy_sqm": "Exceptional",
-            "occupancy_units": "Good"
+            "occupancy_units": "Exceptional"
           }
         }
       ]
@@ -97,19 +93,18 @@
       "name": "CBD - The Exchange",
       "site_code": "58995",
       "current_month": {
-        "leads": 24,
-        "genuine_enquiries": 6,
-        "conversions": 8,
-        "conversion_rate": 0.33299999999999996,
-        "move_ins": 8,
+        "leads": 41,
+        "genuine_enquiries": 5,
+        "conversions": 10,
+        "conversion_rate": 0.244,
+        "move_ins": 10,
         "move_outs": 0,
-        "occupancy_sqm_pct": 0.036000000000000004,
-        "occupancy_units_pct": 0.032,
-        "occupancy_units_rentable_pct": 0.052000000000000005,
+        "occupancy_sqm_pct": 0.043,
+        "occupancy_units_pct": 0.065,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
-          "conversion_rate": "Good",
-          "move_ins": "Concerning",
+          "conversion_rate": "Below Target",
+          "move_ins": "Reasonable",
           "occupancy_sqm": "Concerning",
           "occupancy_units": "Concerning"
         },
@@ -117,21 +112,20 @@
       },
       "monthly_history": [
         {
-          "leads": 24,
-          "genuine_enquiries": 6,
-          "conversions": 8,
-          "conversion_rate": 0.33299999999999996,
-          "move_ins": 8,
+          "leads": 41,
+          "genuine_enquiries": 5,
+          "conversions": 10,
+          "conversion_rate": 0.244,
+          "move_ins": 10,
           "move_outs": 0,
-          "occupancy_sqm_pct": 0.036000000000000004,
-          "occupancy_units_pct": 0.032,
-          "occupancy_units_rentable_pct": 0.052000000000000005,
+          "occupancy_sqm_pct": 0.043,
+          "occupancy_units_pct": 0.065,
           "month": "2026-08",
           "source": "live_current_month",
           "bands": {
             "genuine_enquiries": "Concerning - insufficient demand generation",
-            "conversion_rate": "Good",
-            "move_ins": "Concerning",
+            "conversion_rate": "Below Target",
+            "move_ins": "Reasonable",
             "occupancy_sqm": "Concerning",
             "occupancy_units": "Concerning"
           }
