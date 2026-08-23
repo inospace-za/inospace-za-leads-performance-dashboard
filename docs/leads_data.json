@@ -1,7 +1,7 @@
 {
   "generated_note": "Built by leads-performance-dashboard/etl/build_leads_view.py",
-  "generated_at": "2026-08-22T05:39:45",
-  "run_date": "2026-08-22",
+  "generated_at": "2026-08-23T05:42:54",
+  "run_date": "2026-08-23",
   "sites": {
     "56788": {
       "name": "Maitland",
@@ -52,15 +52,15 @@
       "current_month": {
         "leads": 14,
         "genuine_enquiries": 7,
-        "conversions": 2,
-        "conversion_rate": 0.14300000000000002,
-        "move_ins": 2,
+        "conversions": 3,
+        "conversion_rate": 0.214,
+        "move_ins": 3,
         "move_outs": 2,
-        "occupancy_sqm_pct": 0.501,
-        "occupancy_units_pct": 0.848,
+        "occupancy_sqm_pct": 0.516,
+        "occupancy_units_pct": 0.87,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
-          "conversion_rate": "Concerning",
+          "conversion_rate": "Below Target",
           "move_ins": "Concerning",
           "occupancy_sqm": "Exceptional",
           "occupancy_units": "Exceptional"
@@ -71,17 +71,17 @@
         {
           "leads": 14,
           "genuine_enquiries": 7,
-          "conversions": 2,
-          "conversion_rate": 0.14300000000000002,
-          "move_ins": 2,
+          "conversions": 3,
+          "conversion_rate": 0.214,
+          "move_ins": 3,
           "move_outs": 2,
-          "occupancy_sqm_pct": 0.501,
-          "occupancy_units_pct": 0.848,
+          "occupancy_sqm_pct": 0.516,
+          "occupancy_units_pct": 0.87,
           "month": "2026-08",
           "source": "live_current_month",
           "bands": {
             "genuine_enquiries": "Concerning - insufficient demand generation",
-            "conversion_rate": "Concerning",
+            "conversion_rate": "Below Target",
             "move_ins": "Concerning",
             "occupancy_sqm": "Exceptional",
             "occupancy_units": "Exceptional"
@@ -93,10 +93,10 @@
       "name": "CBD - The Exchange",
       "site_code": "58995",
       "current_month": {
-        "leads": 46,
-        "genuine_enquiries": 6,
+        "leads": 47,
+        "genuine_enquiries": 7,
         "conversions": 10,
-        "conversion_rate": 0.217,
+        "conversion_rate": 0.213,
         "move_ins": 10,
         "move_outs": 0,
         "occupancy_sqm_pct": 0.043,
@@ -112,10 +112,10 @@
       },
       "monthly_history": [
         {
-          "leads": 46,
-          "genuine_enquiries": 6,
+          "leads": 47,
+          "genuine_enquiries": 7,
           "conversions": 10,
-          "conversion_rate": 0.217,
+          "conversion_rate": 0.213,
           "move_ins": 10,
           "move_outs": 0,
           "occupancy_sqm_pct": 0.043,
