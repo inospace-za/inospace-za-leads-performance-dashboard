@@ -1,7 +1,7 @@
 {
   "generated_note": "Built by leads-performance-dashboard/etl/build_leads_view.py",
-  "generated_at": "2026-08-23T05:42:54",
-  "run_date": "2026-08-23",
+  "generated_at": "2026-08-24T05:51:29",
+  "run_date": "2026-08-24",
   "sites": {
     "56788": {
       "name": "Maitland",
@@ -93,10 +93,10 @@
       "name": "CBD - The Exchange",
       "site_code": "58995",
       "current_month": {
-        "leads": 47,
-        "genuine_enquiries": 7,
+        "leads": 49,
+        "genuine_enquiries": 9,
         "conversions": 10,
-        "conversion_rate": 0.213,
+        "conversion_rate": 0.204,
         "move_ins": 10,
         "move_outs": 0,
         "occupancy_sqm_pct": 0.043,
@@ -112,10 +112,10 @@
       },
       "monthly_history": [
         {
-          "leads": 47,
-          "genuine_enquiries": 7,
+          "leads": 49,
+          "genuine_enquiries": 9,
           "conversions": 10,
-          "conversion_rate": 0.213,
+          "conversion_rate": 0.204,
           "move_ins": 10,
           "move_outs": 0,
           "occupancy_sqm_pct": 0.043,
