@@ -318,6 +318,7 @@ async function load() {
     const res = await fetch('leads_data.json', { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     DATA = await res.json();
+    window.DATA = DATA;
     try {
       const tRes = await fetch('targets.json', { cache: 'no-store' });
       if (tRes.ok) {
