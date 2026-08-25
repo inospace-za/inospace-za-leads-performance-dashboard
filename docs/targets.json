@@ -1,11 +1,13 @@
 {
-  "_readme": "Static budget targets from Storage_Targets.xlsx (finance). Not auto-generated — update by hand when finance revises the forecast. total_physical_units = every physical unit at the site (matches Sitelink Rent Roll row count). rentable_units_current = units SiteLink currently flags as rentable/released (matches this dashboard's own occupancy_units_pct denominator) — update this when a new phase is released.",
+  "_readme": "Static budget targets from Storage_Targets.xlsx (finance). Not auto-generated — update by hand when finance revises the forecast. total_physical_units = every physical unit at the site (matches Sitelink Rent Roll row count). rentable_units_current = units SiteLink currently flags as rentable/released. total_sqm / rentable_sqm computed from Rent Roll unit-size columns on 2026-08-24, filtered to the same rentable definition — update all four alongside each other when a new phase is released.",
   "updated": "2026-08-25",
   "sites": {
     "56788": {
       "name": "L001 Maitland Storage",
       "total_physical_units": 234,
       "rentable_units_current": 110,
+      "total_sqm": 2902.0,
+      "rentable_sqm": 1690.0,
       "fy_end": "2027-06-30",
       "quarter_label": "Q1 FY (Jul\u2013Sep 2026)",
       "quarter_rev_target": 818485,
@@ -14,12 +16,14 @@
         "2026-09": { "occ_units_target": 118, "rev_target": 288770 }
       },
       "fy_end_target": { "occ_units_target": 177, "occ_pct_target": 75.6 },
-      "note": "Units 115\u2013238 (Maitland Business Exchange expansion) not yet released — not counted in rentable_units_current."
+      "note": "Units 115\u2013238 (Maitland Business Exchange expansion) not yet released — not counted in rentable_units_current or rentable_sqm."
     },
     "58700": {
       "name": "L002 Salt River Storage",
       "total_physical_units": 102,
       "rentable_units_current": 47,
+      "total_sqm": 1233.0,
+      "rentable_sqm": 772.0,
       "fy_end": "2027-02-28",
       "quarter_label": "Q2 FY (Jun\u2013Aug 2026)",
       "quarter_rev_target": 164661,
@@ -34,6 +38,8 @@
       "name": "L004 CBD Storage",
       "total_physical_units": 251,
       "rentable_units_current": 155,
+      "total_sqm": 1992.5,
+      "rentable_sqm": 1043.5,
       "fy_end": "2027-02-28",
       "quarter_label": "Q2 FY (Jun\u2013Aug 2026)",
       "quarter_rev_target": 134814,
