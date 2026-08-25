@@ -1,0 +1,48 @@
+{
+  "_readme": "Static budget targets from Storage_Targets.xlsx (finance). Not auto-generated — update by hand when finance revises the forecast. total_physical_units = every physical unit at the site (matches Sitelink Rent Roll row count). rentable_units_current = units SiteLink currently flags as rentable/released (matches this dashboard's own occupancy_units_pct denominator) — update this when a new phase is released.",
+  "updated": "2026-08-25",
+  "sites": {
+    "56788": {
+      "name": "L001 Maitland Storage",
+      "total_physical_units": 234,
+      "rentable_units_current": 110,
+      "fy_end": "2027-06-30",
+      "quarter_label": "Q1 FY (Jul\u2013Sep 2026)",
+      "quarter_rev_target": 818485,
+      "monthly": {
+        "2026-08": { "occ_units_target": 108, "rev_target": 269764 },
+        "2026-09": { "occ_units_target": 118, "rev_target": 288770 }
+      },
+      "fy_end_target": { "occ_units_target": 177, "occ_pct_target": 75.6 },
+      "note": "Units 115\u2013238 (Maitland Business Exchange expansion) not yet released — not counted in rentable_units_current."
+    },
+    "58700": {
+      "name": "L002 Salt River Storage",
+      "total_physical_units": 102,
+      "rentable_units_current": 47,
+      "fy_end": "2027-02-28",
+      "quarter_label": "Q2 FY (Jun\u2013Aug 2026)",
+      "quarter_rev_target": 164661,
+      "monthly": {
+        "2026-08": { "occ_units_target": 34, "rev_target": 71004 },
+        "2026-09": { "occ_units_target": 42, "rev_target": 79596 }
+      },
+      "fy_end_target": { "occ_units_target": 66, "occ_pct_target": 64.7 },
+      "note": "Rentable = G001\u2013G053 excluding G010, G025\u2013G027, G042, G049 (47 units). Remaining 55 units under development."
+    },
+    "58995": {
+      "name": "L004 CBD Storage",
+      "total_physical_units": 251,
+      "rentable_units_current": 155,
+      "fy_end": "2027-02-28",
+      "quarter_label": "Q2 FY (Jun\u2013Aug 2026)",
+      "quarter_rev_target": 134814,
+      "monthly": {
+        "2026-08": { "occ_units_target": 50, "rev_target": 74551 },
+        "2026-09": { "occ_units_target": 71, "rev_target": 108146 }
+      },
+      "fy_end_target": { "occ_units_target": 166, "occ_pct_target": 66.1 },
+      "note": "2nd floor (155 units) currently rentable. 3rd floor (96 units) built but not yet released. Floors 4\u20136 undeveloped."
+    }
+  }
+}
