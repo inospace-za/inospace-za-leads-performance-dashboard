@@ -218,5 +218,109 @@ async function load() {
 }
 load();
 </script>
+
+<style id="obj-style">
+.obj-toggle{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 15px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;margin-left:8px}
+.obj-toggle.active{background:var(--red);border-color:var(--red);color:#fff}
+.obj-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;margin-bottom:16px}
+.obj-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.obj-head h3{margin:0;font-size:16px}
+.obj-stats{display:flex;gap:26px;flex-wrap:wrap;margin:12px 0}
+.obj-stat .v{font-size:22px;font-weight:800}
+.obj-stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.obj-chip{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.obj-chip.good{background:rgba(47,158,68,.12);color:var(--good)}
+.obj-chip.bad{background:rgba(232,119,12,.14);color:var(--amber)}
+.obj-note{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ink);margin-top:10px}
+.obj-note.warn{background:rgba(232,119,12,.08)}
+</style>
+<div id="objectives" style="display:none"><div id="obj-root">Loading objectives…</div></div>
+<script>
+(function(){
+  const app = document.getElementById('app');
+  const objDiv = document.getElementById('objectives');
+  const sw = document.getElementById('switch');
+  const toggle = document.createElement('button');
+  toggle.id='tab-objectives';
+  toggle.className='obj-toggle';
+  toggle.textContent='Objectives';
+  if(sw && sw.parentNode) sw.parentNode.insertBefore(toggle, sw.nextSibling);
+  toggle.addEventListener('click', function(){
+    const showing = objDiv.style.display==='block';
+    if(showing){
+      objDiv.style.display='none'; toggle.classList.remove('active');
+      if(app) app.style.display='';
+    } else {
+      objDiv.style.display='block'; toggle.classList.add('active');
+      if(app) app.style.display='none';
+    }
+  });
+  if(sw){
+    sw.addEventListener('click', function(e){
+      if(e.target && e.target.tagName==='BUTTON'){
+        objDiv.style.display='none'; toggle.classList.remove('active');
+        if(app) app.style.display='';
+      }
+    });
+  }
+  function fmtR(n){ return 'R'+Math.round(n).toLocaleString('en-ZA'); }
+  function monthKey(dstr){ return dstr.slice(0,7); }
+  function nextMonthKey(ym){
+    let parts = ym.split('-').map(Number); let y=parts[0]; let m=parts[1];
+    m+=1; if(m>12){m=1;y+=1;}
+    return y+'-'+String(m).padStart(2,'0');
+  }
+  function render(leadsData, targets){
+    const curM = monthKey(leadsData.run_date);
+    const nextM = nextMonthKey(curM);
+    const siteIds = ['56788','58700','58995'];
+    let html = '';
+    siteIds.forEach(function(sid){
+      const s = leadsData.sites[sid];
+      const t = targets.sites[sid];
+      if(!s || !t) return;
+      const cm = s.current_month;
+      const occUnitsRentable = Math.round(cm.occupancy_units_pct * t.rentable_units_current);
+      const curTarget = t.monthly[curM];
+      const nextTarget = t.monthly[nextM];
+      const gap = curTarget ? (occUnitsRentable - curTarget.occ_units_target) : null;
+      const statusCls = (gap===null) ? '' : (gap>=0?'good':'bad');
+      const statusTxt = (gap===null) ? '' : (gap>=0 ? ('On target — +'+gap+' ahead') : ('Behind by '+Math.abs(gap)));
+      const blendedPct = ((occUnitsRentable/t.total_physical_units)*100).toFixed(1);
+      html += '<div class="obj-card">'
+        + '<div class="obj-head"><h3>'+t.name+'</h3>'
+        + (statusTxt?'<span class="obj-chip '+statusCls+'">'+statusTxt+'</span>':'')
+        + '</div>'
+        + '<div class="obj-stats">'
+        + '<div class="obj-stat"><div class="v">'+occUnitsRentable+'/'+t.rentable_units_current+'</div><div class="l">Occupied (rentable)</div></div>'
+        + '<div class="obj-stat"><div class="v">'+blendedPct+'%</div><div class="l">Of '+t.total_physical_units+' total units</div></div>'
+        + '<div class="obj-stat"><div class="v">'+cm.move_ins+'</div><div class="l">Move-ins this month</div></div>'
+        + (curTarget?('<div class="obj-stat"><div class="v">'+curTarget.occ_units_target+'</div><div class="l">'+curM+' target</div></div>'):'')
+        + (nextTarget?('<div class="obj-stat"><div class="v">'+nextTarget.occ_units_target+'</div><div class="l">'+nextM+' target</div></div>'):'')
+        + '</div>'
+        + '<div class="obj-note"><b>'+t.quarter_label+'</b> revenue target: '+fmtR(t.quarter_rev_target)+'. '
+        + 'FY target by '+t.fy_end+': '+t.fy_end_target.occ_units_target+' units ('+t.fy_end_target.occ_pct_target+'%). '
+        + (t.note?t.note:'') + '</div>'
+        + '<div class="obj-note warn">Revenue actual isn\'t in this pipeline yet (leads_data.json has no revenue field) — target shown above for reference only.</div>'
+        + '</div>';
+    });
+    const root = document.getElementById('obj-root');
+    if(root) root.innerHTML = html || 'No objectives data available.';
+  }
+  async function loadObjectives(){
+    try{
+      const leadsResp = await fetch('leads_data.json');
+      const leadsData = await leadsResp.json();
+      const targetsResp = await fetch('targets.json');
+      const targets = await targetsResp.json();
+      render(leadsData, targets);
+    }catch(e){
+      const root = document.getElementById('obj-root');
+      if(root) root.textContent = 'Could not load objectives data.';
+    }
+  }
+  loadObjectives();
+})();
+</script>
 </body>
 </html>
