@@ -242,7 +242,7 @@ function render() {
 
   const cards = [
     ['Leads', cur.leads, null],
-    ['Reservations', cur.genuine_enquiries, cur.bands && cur.bands.genuine_enquiries],
+    ['Monthly Target (units)', cur.monthly_target_units != null ? cur.monthly_target_units : '—', null],
     ['Conversion Rate', cur.conversion_rate != null ? (cur.conversion_rate * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.conversion_rate],
     ['Move-ins', cur.move_ins, cur.bands && cur.bands.move_ins],
     ['Occupancy % (sqm)', cur.occupancy_sqm_pct != null ? (cur.occupancy_sqm_pct * 100).toFixed(1) + '%' : '—', cur.bands && cur.bands.occupancy_sqm],
@@ -252,6 +252,9 @@ function render() {
   const subText = (label, band) => {
     if (label === 'Reservations') {
       return `Genuine Enquiries${band ? ' · ' + band : ''}`;
+    }
+    if (label === 'Occupancy % (sqm)') {
+      return `${band || ''}${band ? ' · ' : ''}rentable units only`;
     }
     if (label === 'Occupancy % (units)') {
       return `${band || ''}${band ? ' · ' : ''}rentable units only`;
@@ -315,6 +318,26 @@ async function load() {
     const res = await fetch('leads_data.json', { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     DATA = await res.json();
+    try {
+      const tRes = await fetch('targets.json', { cache: 'no-store' });
+      if (tRes.ok) {
+        window.TARGETS = await tRes.json();
+        const curMonthKey = (DATA.run_date || '').slice(0,7);
+        Object.keys(DATA.sites || {}).forEach(function(sid){
+          const site = DATA.sites[sid];
+          const t = window.TARGETS.sites && window.TARGETS.sites[sid];
+          const cur = site.current_month;
+          if (t && cur) {
+            if (cur.occupancy_sqm_pct != null && t.total_sqm && t.rentable_sqm) {
+              const occupiedSqm = cur.occupancy_sqm_pct * t.total_sqm;
+              cur.occupancy_sqm_pct = Math.round((occupiedSqm / t.rentable_sqm) * 1000) / 1000;
+            }
+            const mt = t.monthly && t.monthly[curMonthKey];
+            cur.monthly_target_units = mt ? mt.occ_units_target : null;
+          }
+        });
+      }
+    } catch (eTargets) { /* targets.json optional */ }
   } catch (e) {
     el.innerHTML = '<div class="error">Could not load leads_data.json: ' + e.message +
       '. This file is rebuilt daily by the GitHub Actions workflow - if it is missing, ' +
@@ -332,57 +355,28 @@ load();
 </script>
 
 <style id="obj-style">
-.obj-toggle{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 15px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;margin-left:8px}
+.obj-toggle{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;margin-right:8px}
 .obj-toggle.active{background:var(--red);border-color:var(--red);color:#fff}
-.obj-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;margin-bottom:16px}
-.obj-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.obj-head h3{margin:0;font-size:16px}
-.obj-stats{display:flex;gap:26px;flex-wrap:wrap;margin:12px 0}
-.obj-stat .v{font-size:22px;font-weight:800}
-.obj-stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-.obj-chip{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.obj-chip{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle}
 .obj-chip.good{background:rgba(47,158,68,.12);color:var(--good)}
 .obj-chip.bad{background:rgba(232,119,12,.14);color:var(--amber)}
-.obj-note{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ink);margin-top:10px}
+.obj-note{background:var(--chip,#f2f4f7);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ink);margin-top:4px}
 .obj-note.warn{background:rgba(232,119,12,.08)}
 </style>
-<div id="objectives" style="display:none"><div id="obj-root">Loading objectives…</div></div>
 <script>
 (function(){
-  const app = document.getElementById('app');
-  const objDiv = document.getElementById('objectives');
-  const sw = document.getElementById('switch');
-  const toggle = document.createElement('button');
-  toggle.id='tab-objectives';
-  toggle.className='obj-toggle';
-  toggle.textContent='Objectives';
-  if(sw && sw.parentNode) sw.parentNode.insertBefore(toggle, sw.nextSibling);
-  toggle.addEventListener('click', function(){
-    const showing = objDiv.style.display==='block';
-    if(showing){
-      objDiv.style.display='none'; toggle.classList.remove('active');
-      if(app) app.style.display='';
-    } else {
-      objDiv.style.display='block'; toggle.classList.add('active');
-      if(app) app.style.display='none';
-    }
-  });
-  if(sw){
-    sw.addEventListener('click', function(e){
-      if(e.target && e.target.tagName==='BUTTON'){
-        objDiv.style.display='none'; toggle.classList.remove('active');
-        if(app) app.style.display='';
-      }
-    });
-  }
   function fmtR(n){ return 'R'+Math.round(n).toLocaleString('en-ZA'); }
-  function monthKey(dstr){ return dstr.slice(0,7); }
+  function monthKey(dstr){ return (dstr||'').slice(0,7); }
   function nextMonthKey(ym){
     let parts = ym.split('-').map(Number); let y=parts[0]; let m=parts[1];
     m+=1; if(m>12){m=1;y+=1;}
     return y+'-'+String(m).padStart(2,'0');
   }
-  function render(leadsData, targets){
+  function renderObjectives(){
+    const root = document.getElementById('obj-root');
+    if(!root) return;
+    const leadsData = window.DATA, targets = window.TARGETS;
+    if(!leadsData || !targets){ root.innerHTML = 'Loading objectives…'; return; }
     const curM = monthKey(leadsData.run_date);
     const nextM = nextMonthKey(curM);
     const siteIds = ['56788','58700','58995'];
@@ -392,46 +386,87 @@ load();
       const t = targets.sites[sid];
       if(!s || !t) return;
       const cm = s.current_month;
-      const occUnitsRentable = Math.round(cm.occupancy_units_pct * t.rentable_units_current);
+      const occUnitsRentable = Math.round((cm.occupancy_units_pct||0) * t.rentable_units_current);
       const curTarget = t.monthly[curM];
       const nextTarget = t.monthly[nextM];
       const gap = curTarget ? (occUnitsRentable - curTarget.occ_units_target) : null;
       const statusCls = (gap===null) ? '' : (gap>=0?'good':'bad');
       const statusTxt = (gap===null) ? '' : (gap>=0 ? ('On target — +'+gap+' ahead') : ('Behind by '+Math.abs(gap)));
       const blendedPct = ((occUnitsRentable/t.total_physical_units)*100).toFixed(1);
-      html += '<div class="obj-card">'
-        + '<div class="obj-head"><h3>'+t.name+'</h3>'
-        + (statusTxt?'<span class="obj-chip '+statusCls+'">'+statusTxt+'</span>':'')
-        + '</div>'
-        + '<div class="obj-stats">'
-        + '<div class="obj-stat"><div class="v">'+occUnitsRentable+'/'+t.rentable_units_current+'</div><div class="l">Occupied (rentable)</div></div>'
-        + '<div class="obj-stat"><div class="v">'+blendedPct+'%</div><div class="l">Of '+t.total_physical_units+' total units</div></div>'
-        + '<div class="obj-stat"><div class="v">'+cm.move_ins+'</div><div class="l">Move-ins this month</div></div>'
-        + (curTarget?('<div class="obj-stat"><div class="v">'+curTarget.occ_units_target+'</div><div class="l">'+curM+' target</div></div>'):'')
-        + (nextTarget?('<div class="obj-stat"><div class="v">'+nextTarget.occ_units_target+'</div><div class="l">'+nextM+' target</div></div>'):'')
+      html += '<div class="panel">'
+        + '<h2>'+t.name+(statusTxt?' <span class="obj-chip '+statusCls+'">'+statusTxt+'</span>':'')+'</h2>'
+        + '<div class="tiles">'
+        + '<div class="tile"><div class="lab">Occupied (rentable)</div><div class="val">'+occUnitsRentable+'/'+t.rentable_units_current+'</div></div>'
+        + '<div class="tile"><div class="lab">Of '+t.total_physical_units+' total units</div><div class="val">'+blendedPct+'%</div></div>'
+        + '<div class="tile"><div class="lab">Move-ins this month</div><div class="val">'+(cm.move_ins!=null?cm.move_ins:'—')+'</div></div>'
+        + (curTarget?('<div class="tile '+statusCls+'"><div class="lab">'+curM+' target</div><div class="val">'+curTarget.occ_units_target+'</div></div>'):'')
+        + (nextTarget?('<div class="tile"><div class="lab">'+nextM+' target</div><div class="val">'+nextTarget.occ_units_target+'</div></div>'):'')
         + '</div>'
         + '<div class="obj-note"><b>'+t.quarter_label+'</b> revenue target: '+fmtR(t.quarter_rev_target)+'. '
         + 'FY target by '+t.fy_end+': '+t.fy_end_target.occ_units_target+' units ('+t.fy_end_target.occ_pct_target+'%). '
         + (t.note?t.note:'') + '</div>'
-        + '<div class="obj-note warn">Revenue actual isn\'t in this pipeline yet (leads_data.json has no revenue field) — target shown above for reference only.</div>'
+        + '<div class="obj-note warn">Revenue actual isn\'t in this pipeline yet — target shown above for reference only.</div>'
         + '</div>';
     });
-    const root = document.getElementById('obj-root');
-    if(root) root.innerHTML = html || 'No objectives data available.';
+    root.innerHTML = html || 'No objectives data available.';
   }
-  async function loadObjectives(){
-    try{
-      const leadsResp = await fetch('leads_data.json');
-      const leadsData = await leadsResp.json();
-      const targetsResp = await fetch('targets.json');
-      const targets = await targetsResp.json();
-      render(leadsData, targets);
-    }catch(e){
-      const root = document.getElementById('obj-root');
-      if(root) root.textContent = 'Could not load objectives data.';
+
+  function init(){
+    const app = document.getElementById('app');
+    const foot = document.getElementById('foot');
+    const wrap = document.querySelector('.wrap');
+    const criteriaBtn = document.getElementById('btn-criteria');
+    if(!app || !wrap || !criteriaBtn) { setTimeout(init, 100); return; }
+
+    const objDiv = document.createElement('div');
+    objDiv.id = 'objectives';
+    objDiv.style.display = 'none';
+    objDiv.innerHTML = '<div id="obj-root">Loading objectives…</div>';
+    wrap.insertBefore(objDiv, foot || null);
+
+    const toggle = document.createElement('button');
+    toggle.id = 'tab-objectives';
+    toggle.className = 'obj-toggle';
+    toggle.textContent = 'Objectives';
+    criteriaBtn.parentNode.insertBefore(toggle, criteriaBtn);
+
+    toggle.addEventListener('click', function(){
+      const showing = objDiv.style.display === 'block';
+      if(showing){
+        objDiv.style.display = 'none'; toggle.classList.remove('active');
+        app.style.display = '';
+      } else {
+        objDiv.style.display = 'block'; toggle.classList.add('active');
+        app.style.display = 'none';
+        renderObjectives();
+      }
+    });
+
+    const sw = document.getElementById('switch');
+    if(sw){
+      sw.addEventListener('click', function(e){
+        if(e.target && e.target.tagName === 'BUTTON'){
+          objDiv.style.display = 'none'; toggle.classList.remove('active');
+          app.style.display = '';
+        }
+      });
     }
+
+    (async function loadTargetsIfNeeded(){
+      if(!window.TARGETS){
+        try{
+          const r = await fetch('targets.json', {cache:'no-store'});
+          if(r.ok) window.TARGETS = await r.json();
+        }catch(e){}
+      }
+    })();
   }
-  loadObjectives();
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>
 </body>
