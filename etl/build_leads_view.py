@@ -220,6 +220,7 @@ def extract_site_current_month(data, site_code):
         "net_units_absorbed": net_units_absorbed,
         "occupancy_sqm_pct": occupancy_sqm_pct,
         "occupancy_units_pct": occupancy_units_pct,
+        "revenue_actual": site.get("actual_occupied"),
     }
 
 
@@ -273,6 +274,7 @@ def update_archive_for_site(archive, site_code, current_month_key, current_month
         "move_outs": current_month_data["move_outs"],
         "occupancy_sqm_pct": current_month_data["occupancy_sqm_pct"],
         "occupancy_units_pct": current_month_data["occupancy_units_pct"],
+        "revenue_actual": current_month_data.get("revenue_actual"),
     }
 
 
