@@ -1,0 +1,38 @@
+{
+  "56788": {
+    "2026-08": {
+      "leads": 13,
+      "genuine_enquiries": 0,
+      "conversions": 2,
+      "conversion_rate": 0.154,
+      "move_ins": 2,
+      "move_outs": 1,
+      "occupancy_sqm_pct": 0.5670000000000001,
+      "occupancy_units_pct": 0.973
+    }
+  },
+  "58700": {
+    "2026-08": {
+      "leads": 15,
+      "genuine_enquiries": 7,
+      "conversions": 3,
+      "conversion_rate": 0.2,
+      "move_ins": 3,
+      "move_outs": 2,
+      "occupancy_sqm_pct": 0.516,
+      "occupancy_units_pct": 0.87
+    }
+  },
+  "58995": {
+    "2026-08": {
+      "leads": 64,
+      "genuine_enquiries": 7,
+      "conversions": 13,
+      "conversion_rate": 0.203,
+      "move_ins": 13,
+      "move_outs": 0,
+      "occupancy_sqm_pct": 0.053,
+      "occupancy_units_pct": 0.084
+    }
+  }
+}
