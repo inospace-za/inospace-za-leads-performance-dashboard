@@ -131,6 +131,41 @@
   <div id="app"><div class="loading">Loading dashboard…</div></div>
   <div class="foot" id="foot"></div>
 </div>
+<script id="sqm-interceptor">
+(function(){
+  var _fetch = window.fetch;
+  window.fetch = function(url, opts){
+    if(typeof url === 'string' && url.indexOf('leads_data.json') !== -1){
+      return _fetch(url, opts).then(function(resp){
+        return resp.json().then(function(data){
+          return _fetch('targets.json', {cache:'no-store'}).then(function(tr){
+            return tr.json().then(function(targets){
+              window.TARGETS = targets;
+              try {
+                Object.keys(data.sites||{}).forEach(function(sid){
+                  var site = data.sites[sid];
+                  var t = targets.sites && targets.sites[sid];
+                  if(!site || !t || !t.total_sqm || !t.rentable_sqm) return;
+                  function corr(entry){
+                    if(!entry || entry.occupancy_sqm_pct == null) return;
+                    var occSqm = entry.occupancy_sqm_pct * t.total_sqm;
+                    entry.occupancy_sqm_pct = Math.round((occSqm / t.rentable_sqm)*1000)/1000;
+                  }
+                  corr(site.current_month);
+                  (site.monthly_history||[]).forEach(corr);
+                });
+              } catch(e){}
+              window.DATA = data;
+              return new Response(JSON.stringify(data), {status:resp.status, headers:resp.headers});
+            });
+          });
+        });
+      });
+    }
+    return _fetch(url, opts);
+  };
+})();
+</script>
 <script>
 let DATA = null;
 let ACTIVE_SITE = null;
@@ -512,21 +547,11 @@ load();
       }
     });
 
-    (async function load(){
-      try{
-        if(!window.DATA){
-          const r = await fetch('leads_data.json', {cache:'no-store'});
-          window.DATA = await r.json();
-        }
-        const tr = await fetch('targets.json', {cache:'no-store'});
-        window.TARGETS = await tr.json();
-        correctAllSqm();
-        refreshAll();
-      }catch(e){
-        const root = document.getElementById('objectives');
-        if(root) root.textContent = 'Could not load objectives data.';
-      }
+    (function waitForData(){
+      if(window.DATA && window.TARGETS){ refreshAll(); return; }
+      setTimeout(waitForData, 50);
     })();
+    
   }
 
   if(document.readyState === 'loading'){
