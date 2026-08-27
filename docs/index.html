@@ -147,9 +147,10 @@
                   var t = targets.sites && targets.sites[sid];
                   if(!site || !t || !t.total_sqm || !t.rentable_sqm) return;
                   function corr(entry){
-                    if(!entry || entry.occupancy_sqm_pct == null) return;
+                    if(!entry || entry.occupancy_sqm_pct == null || entry.__sqmCorrected) return;
                     var occSqm = entry.occupancy_sqm_pct * t.total_sqm;
                     entry.occupancy_sqm_pct = Math.round((occSqm / t.rentable_sqm)*1000)/1000;
+                    entry.__sqmCorrected = true;
                   }
                   corr(site.current_month);
                   (site.monthly_history||[]).forEach(corr);
