@@ -471,6 +471,26 @@ load();
       }
     });
 
+    const table = document.querySelector('#app table');
+    if(table){
+      const headers = Array.from(table.querySelectorAll('th')).map(function(th){ return th.textContent.trim().replace('\u2193','').replace('\u2195','').trim(); });
+      const sqmColIdx = headers.indexOf('Occupancy % (sqm)');
+      if(sqmColIdx !== -1){
+        Array.from(table.querySelectorAll('tbody tr')).forEach(function(row){
+          const cell = row.children[sqmColIdx];
+          if(!cell || cell.dataset.sqmCorrected === '1') return;
+          const rawPct = parseFloat(cell.textContent) / 100;
+          if(isNaN(rawPct)) return;
+          const corrected = correctedSqmPct(rawPct, snap.t);
+          if(corrected != null){
+            const newText = (corrected*100).toFixed(1)+'%';
+            if(cell.textContent !== newText) cell.textContent = newText;
+            cell.dataset.sqmCorrected = '1';
+          }
+        });
+      }
+    }
+
     if(snap.revActual != null && !tilesContainer.querySelector('[data-injected="revenue"]')){
       const cls = snap.revGap==null ? '' : (snap.revGap>=0?'g':'a');
       const div = document.createElement('div');
