@@ -8,7 +8,8 @@
       "move_ins": 2,
       "move_outs": 1,
       "occupancy_sqm_pct": 0.5670000000000001,
-      "occupancy_units_pct": 0.973
+      "occupancy_units_pct": 0.973,
+      "revenue_actual": 291614.72
     }
   },
   "58700": {
@@ -20,7 +21,8 @@
       "move_ins": 3,
       "move_outs": 2,
       "occupancy_sqm_pct": 0.516,
-      "occupancy_units_pct": 0.87
+      "occupancy_units_pct": 0.87,
+      "revenue_actual": 103660.92
     }
   },
   "58995": {
@@ -32,7 +34,8 @@
       "move_ins": 13,
       "move_outs": 0,
       "occupancy_sqm_pct": 0.053,
-      "occupancy_units_pct": 0.084
+      "occupancy_units_pct": 0.084,
+      "revenue_actual": 27606.05
     }
   }
 }

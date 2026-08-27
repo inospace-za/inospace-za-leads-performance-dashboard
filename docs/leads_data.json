@@ -15,6 +15,7 @@
         "move_outs": 1,
         "occupancy_sqm_pct": 0.5670000000000001,
         "occupancy_units_pct": 0.973,
+        "revenue_actual": 291614.72,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
           "conversion_rate": "Concerning",
@@ -34,6 +35,7 @@
           "move_outs": 1,
           "occupancy_sqm_pct": 0.5670000000000001,
           "occupancy_units_pct": 0.973,
+          "revenue_actual": 291614.72,
           "month": "2026-08",
           "source": "live_current_month",
           "bands": {
@@ -58,6 +60,7 @@
         "move_outs": 2,
         "occupancy_sqm_pct": 0.516,
         "occupancy_units_pct": 0.87,
+        "revenue_actual": 103660.92,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
           "conversion_rate": "Below Target",
@@ -77,6 +80,7 @@
           "move_outs": 2,
           "occupancy_sqm_pct": 0.516,
           "occupancy_units_pct": 0.87,
+          "revenue_actual": 103660.92,
           "month": "2026-08",
           "source": "live_current_month",
           "bands": {
@@ -101,6 +105,7 @@
         "move_outs": 0,
         "occupancy_sqm_pct": 0.053,
         "occupancy_units_pct": 0.084,
+        "revenue_actual": 27606.05,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
           "conversion_rate": "Below Target",
@@ -120,6 +125,7 @@
           "move_outs": 0,
           "occupancy_sqm_pct": 0.053,
           "occupancy_units_pct": 0.084,
+          "revenue_actual": 27606.05,
           "month": "2026-08",
           "source": "live_current_month",
           "bands": {
