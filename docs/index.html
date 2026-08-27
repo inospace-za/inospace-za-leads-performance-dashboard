@@ -394,6 +394,10 @@ load();
       const statusCls = (gap===null) ? '' : (gap>=0?'good':'bad');
       const statusTxt = (gap===null) ? '' : (gap>=0 ? ('On target — +'+gap+' ahead') : ('Behind by '+Math.abs(gap)));
       const blendedPct = ((occUnitsRentable/t.total_physical_units)*100).toFixed(1);
+      const revActual = cm.revenue_actual;
+      const revTarget = curTarget ? curTarget.rev_target : null;
+      const revGap = (revActual != null && revTarget != null) ? (revActual - revTarget) : null;
+      const revStatusCls = (revGap === null) ? '' : (revGap >= 0 ? 'good' : 'bad');
       html += '<div class="panel">'
         + '<h2>'+t.name+(statusTxt?' <span class="obj-chip '+statusCls+'">'+statusTxt+'</span>':'')+'</h2>'
         + '<div class="tiles">'
@@ -402,11 +406,12 @@ load();
         + '<div class="tile"><div class="lab">Move-ins this month</div><div class="val">'+(cm.move_ins!=null?cm.move_ins:'—')+'</div></div>'
         + (curTarget?('<div class="tile '+statusCls+'"><div class="lab">'+curM+' target</div><div class="val">'+curTarget.occ_units_target+'</div></div>'):'')
         + (nextTarget?('<div class="tile"><div class="lab">'+nextM+' target</div><div class="val">'+nextTarget.occ_units_target+'</div></div>'):'')
+        + (revActual != null ? ('<div class="tile '+revStatusCls+'"><div class="lab">Revenue this month</div><div class="val">'+fmtR(revActual)+'</div></div>'+(revTarget!=null?('<div class="tile"><div class="lab">Revenue target</div><div class="val">'+fmtR(revTarget)+'</div></div>'):'')) : '')
         + '</div>'
         + '<div class="obj-note"><b>'+t.quarter_label+'</b> revenue target: '+fmtR(t.quarter_rev_target)+'. '
         + 'FY target by '+t.fy_end+': '+t.fy_end_target.occ_units_target+' units ('+t.fy_end_target.occ_pct_target+'%). '
         + (t.note?t.note:'') + '</div>'
-        + '<div class="obj-note warn">Revenue actual isn\'t in this pipeline yet — target shown above for reference only.</div>'
+        + (revGap != null ? ('<div class="obj-note'+(revGap>=0?'':' warn')+'">'+(revGap>=0 ? (fmtR(revGap)+' ahead of this month\'s revenue target.') : (fmtR(Math.abs(revGap))+' short of this month\'s revenue target.')) + '</div>') : '')
         + '</div>';
     });
     root.innerHTML = html || 'No objectives data available.';
