@@ -356,16 +356,26 @@ load();
 </script>
 
 <style id="obj-style">
-.obj-toggle{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;margin-right:8px}
-.obj-toggle.active{background:var(--red);border-color:var(--red);color:#fff}
 .obj-chip{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle}
 .obj-chip.good{background:rgba(47,158,68,.12);color:var(--good)}
 .obj-chip.bad{background:rgba(232,119,12,.14);color:var(--amber)}
 .obj-note{background:var(--chip,#f2f4f7);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ink);margin-top:4px}
 .obj-note.warn{background:rgba(232,119,12,.08)}
+.obj-section-lab{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:18px 0 8px}
+.pf-grid{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0 4px}
+.pf-card{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;cursor:pointer;transition:transform .1s}
+.pf-card:hover{transform:translateY(-1px)}
+.pf-card .nm{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+.pf-card .pct{font-size:26px;font-weight:800;margin-top:2px}
+.pf-card .sub{font-size:12px;color:var(--muted);margin-top:2px}
 </style>
+<div id="portfolio-strip"></div>
+<div id="objectives"></div>
 <script>
 (function(){
+  const SITE_IDS = ['56788','58700','58995'];
+  const SHORT_NAME = {'56788':'Maitland','58700':'Salt River','58995':'CBD'};
+
   function fmtR(n){ return 'R'+Math.round(n).toLocaleString('en-ZA'); }
   function monthKey(dstr){ return (dstr||'').slice(0,7); }
   function nextMonthKey(ym){
@@ -373,97 +383,148 @@ load();
     m+=1; if(m>12){m=1;y+=1;}
     return y+'-'+String(m).padStart(2,'0');
   }
-  function renderObjectives(){
-    const root = document.getElementById('obj-root');
-    if(!root) return;
-    const leadsData = window.DATA, targets = window.TARGETS;
-    if(!leadsData || !targets){ root.innerHTML = 'Loading objectives…'; return; }
-    const curM = monthKey(leadsData.run_date);
+
+  // Single source of truth for the rentable-corrected sqm occupancy figure.
+  // Applied to current_month AND every monthly_history row, so the same
+  // metric never shows two different numbers on the same page again.
+  function correctedSqmPct(entry, t){
+    if(!entry || entry.occupancy_sqm_pct == null || !t || !t.total_sqm || !t.rentable_sqm) return entry ? entry.occupancy_sqm_pct : null;
+    const occupiedSqm = entry.occupancy_sqm_pct * t.total_sqm;
+    return Math.round((occupiedSqm / t.rentable_sqm) * 1000) / 1000;
+  }
+
+  function correctAllSqm(){
+    if(!window.DATA || !window.TARGETS) return;
+    SITE_IDS.forEach(function(sid){
+      const site = window.DATA.sites[sid];
+      const t = window.TARGETS.sites[sid];
+      if(!site || !t) return;
+      if(site.current_month) site.current_month.occupancy_sqm_pct = correctedSqmPct(site.current_month, t);
+      (site.monthly_history||[]).forEach(function(row){
+        row.occupancy_sqm_pct = correctedSqmPct(row, t);
+      });
+    });
+  }
+
+  function siteSnapshot(sid){
+    const s = window.DATA && window.DATA.sites[sid];
+    const t = window.TARGETS && window.TARGETS.sites[sid];
+    if(!s || !t) return null;
+    const cm = s.current_month;
+    const curM = monthKey(window.DATA.run_date);
     const nextM = nextMonthKey(curM);
-    const siteIds = ['56788','58700','58995'];
-    let html = '';
-    siteIds.forEach(function(sid){
-      const s = leadsData.sites[sid];
-      const t = targets.sites[sid];
-      if(!s || !t) return;
-      const cm = s.current_month;
-      const occUnitsRentable = Math.round((cm.occupancy_units_pct||0) * t.rentable_units_current);
-      const curTarget = t.monthly[curM];
-      const nextTarget = t.monthly[nextM];
-      const gap = curTarget ? (occUnitsRentable - curTarget.occ_units_target) : null;
-      const statusCls = (gap===null) ? '' : (gap>=0?'good':'bad');
-      const statusTxt = (gap===null) ? '' : (gap>=0 ? ('On target — +'+gap+' ahead') : ('Behind by '+Math.abs(gap)));
-      const blendedPct = ((occUnitsRentable/t.total_physical_units)*100).toFixed(1);
-      const revActual = cm.revenue_actual;
-      const revTarget = curTarget ? curTarget.rev_target : null;
-      const revGap = (revActual != null && revTarget != null) ? (revActual - revTarget) : null;
-      const revStatusCls = (revGap === null) ? '' : (revGap >= 0 ? 'good' : 'bad');
-      html += '<div class="panel">'
-        + '<h2>'+t.name+(statusTxt?' <span class="obj-chip '+statusCls+'">'+statusTxt+'</span>':'')+'</h2>'
-        + '<div class="tiles">'
-        + '<div class="tile"><div class="lab">Occupied (rentable)</div><div class="val">'+occUnitsRentable+'/'+t.rentable_units_current+'</div></div>'
-        + '<div class="tile"><div class="lab">Of '+t.total_physical_units+' total units</div><div class="val">'+blendedPct+'%</div></div>'
-        + '<div class="tile"><div class="lab">Move-ins this month</div><div class="val">'+(cm.move_ins!=null?cm.move_ins:'—')+'</div></div>'
-        + (curTarget?('<div class="tile '+statusCls+'"><div class="lab">'+curM+' target</div><div class="val">'+curTarget.occ_units_target+'</div></div>'):'')
-        + (nextTarget?('<div class="tile"><div class="lab">'+nextM+' target</div><div class="val">'+nextTarget.occ_units_target+'</div></div>'):'')
-        + (revActual != null ? ('<div class="tile '+revStatusCls+'"><div class="lab">Revenue this month</div><div class="val">'+fmtR(revActual)+'</div></div>'+(revTarget!=null?('<div class="tile"><div class="lab">Revenue target</div><div class="val">'+fmtR(revTarget)+'</div></div>'):'')) : '')
-        + '</div>'
-        + '<div class="obj-note"><b>'+t.quarter_label+'</b> revenue target: '+fmtR(t.quarter_rev_target)+'. '
-        + 'FY target by '+t.fy_end+': '+t.fy_end_target.occ_units_target+' units ('+t.fy_end_target.occ_pct_target+'%). '
-        + (t.note?t.note:'') + '</div>'
-        + (revGap != null ? ('<div class="obj-note'+(revGap>=0?'':' warn')+'">'+(revGap>=0 ? (fmtR(revGap)+' ahead of this month\'s revenue target.') : (fmtR(Math.abs(revGap))+' short of this month\'s revenue target.')) + '</div>') : '')
+    const occUnitsRentable = Math.round((cm.occupancy_units_pct||0) * t.rentable_units_current);
+    const curTarget = t.monthly[curM];
+    const nextTarget = t.monthly[nextM];
+    const gap = curTarget ? (occUnitsRentable - curTarget.occ_units_target) : null;
+    const blendedPct = ((occUnitsRentable/t.total_physical_units)*100);
+    const revActual = cm.revenue_actual;
+    const revTarget = curTarget ? curTarget.rev_target : null;
+    const revGap = (revActual != null && revTarget != null) ? (revActual - revTarget) : null;
+    const unitsStillNeeded = (curTarget && gap != null) ? Math.max(0, curTarget.occ_units_target - occUnitsRentable) : null;
+    const moveInsPerLead = (cm.leads > 0 && cm.move_ins > 0) ? (cm.move_ins / cm.leads) : null;
+    const leadsNeeded = (unitsStillNeeded != null && unitsStillNeeded > 0 && moveInsPerLead) ? Math.ceil(unitsStillNeeded / moveInsPerLead) : null;
+    return { s, t, cm, curM, nextM, occUnitsRentable, curTarget, nextTarget, gap, blendedPct, revActual, revTarget, revGap, unitsStillNeeded, moveInsPerLead, leadsNeeded };
+  }
+
+  function switchToSite(sid){
+    const btn = document.querySelector('#switch button[data-v="'+sid+'"]');
+    if(btn) btn.click();
+  }
+
+  function renderPortfolioStrip(){
+    const root = document.getElementById('portfolio-strip');
+    if(!root) return;
+    let html = '<div class="pf-grid">';
+    SITE_IDS.forEach(function(sid){
+      const snap = siteSnapshot(sid);
+      if(!snap) return;
+      const cls = (snap.gap==null) ? '' : (snap.gap>=0 ? 'good' : 'bad');
+      const statusTxt = (snap.gap==null) ? '' : (snap.gap>=0 ? ('+'+snap.gap+' ahead') : ((-snap.gap)+' short'));
+      html += '<div class="pf-card" data-site="'+sid+'">'
+        + '<div class="nm">'+SHORT_NAME[sid]+(statusTxt?' <span class="obj-chip '+cls+'">'+statusTxt+'</span>':'')+'</div>'
+        + '<div class="pct">'+snap.blendedPct.toFixed(1)+'%</div>'
+        + '<div class="sub">'+snap.occUnitsRentable+'/'+snap.t.rentable_units_current+' rentable · '+snap.t.total_physical_units+' total units</div>'
         + '</div>';
     });
-    root.innerHTML = html || 'No objectives data available.';
+    html += '</div>';
+    root.innerHTML = html;
+    root.querySelectorAll('.pf-card').forEach(function(card){
+      card.addEventListener('click', function(){ switchToSite(card.dataset.site); });
+    });
+  }
+
+  function renderObjectiveSection(sid){
+    const root = document.getElementById('objectives');
+    if(!root) return;
+    const snap = siteSnapshot(sid);
+    if(!snap){ root.innerHTML = ''; return; }
+    const t = snap.t, cm = snap.cm, curTarget = snap.curTarget, nextTarget = snap.nextTarget;
+    const statusCls = (snap.gap===null) ? '' : (snap.gap>=0?'good':'bad');
+    const revStatusCls = (snap.revGap===null) ? '' : (snap.revGap>=0?'good':'bad');
+
+    let leadsNote;
+    if(snap.unitsStillNeeded === 0) leadsNote = 'Target already met for '+snap.curM+'.';
+    else if(snap.leadsNeeded != null) leadsNote = '~'+snap.leadsNeeded+' more leads needed this month at the current move-in rate ('+cm.move_ins+' move-ins from '+cm.leads+' leads).';
+    else leadsNote = 'Not enough leads/move-ins data yet this month to estimate.';
+
+    let html = '<div class="obj-section-lab">Objective — '+t.name+'</div>';
+    html += '<div class="panel">';
+    html += '<div class="tiles">';
+    html += '<div class="tile '+statusCls+'"><div class="lab">Occupancy Objective</div><div class="val">'+snap.blendedPct.toFixed(1)+'%</div><div class="sub">target '+(curTarget?curTarget.occ_units_target:'—')+' units · static goal</div></div>';
+    if(snap.revActual != null){
+      html += '<div class="tile '+revStatusCls+'"><div class="lab">Revenue Objective</div><div class="val">'+(snap.revGap!=null?((snap.revGap>=0?'+':'−')+fmtR(Math.abs(snap.revGap))):'—')+'</div><div class="sub">'+fmtR(snap.revActual)+' of '+(snap.revTarget!=null?fmtR(snap.revTarget):'—')+' target</div></div>';
+    }
+    html += '<div class="tile"><div class="lab">Leads still needed</div><div class="val">'+(snap.leadsNeeded!=null?snap.leadsNeeded:(snap.unitsStillNeeded===0?'0':'—'))+'</div><div class="sub">to hit '+snap.curM+' target</div></div>';
+    if(nextTarget){
+      html += '<div class="tile"><div class="lab">'+snap.nextM+' target</div><div class="val">'+nextTarget.occ_units_target+' units</div></div>';
+    }
+    html += '</div>';
+    html += '<div class="obj-note">'+leadsNote+'</div>';
+    html += '<div class="obj-note"><b>'+t.quarter_label+'</b> revenue target: '+fmtR(t.quarter_rev_target)+'. FY target by '+t.fy_end+': '+t.fy_end_target.occ_units_target+' units ('+t.fy_end_target.occ_pct_target+'%). '+(t.note?t.note:'')+'</div>';
+    html += '<div class="obj-note warn">Move-ins are as reported by Sitelink at run time — future-dated move-ins are not counted until their date arrives.</div>';
+    html += '</div>';
+    root.innerHTML = html;
+  }
+
+  function currentActiveSite(){
+    const active = document.querySelector('#switch button.active');
+    return active ? active.dataset.v : SITE_IDS[0];
+  }
+
+  function refreshAll(){
+    renderPortfolioStrip();
+    renderObjectiveSection(currentActiveSite());
   }
 
   function init(){
-    const app = document.getElementById('app');
-    const foot = document.getElementById('foot');
     const wrap = document.querySelector('.wrap');
-    const criteriaBtn = document.getElementById('btn-criteria');
-    if(!app || !wrap || !criteriaBtn) { setTimeout(init, 100); return; }
+    const period = document.getElementById('period');
+    const sw = document.getElementById('switch');
+    if(!wrap || !period || !sw){ setTimeout(init, 100); return; }
 
-    const objDiv = document.createElement('div');
-    objDiv.id = 'objectives';
-    objDiv.style.display = 'none';
-    objDiv.innerHTML = '<div id="obj-root">Loading objectives…</div>';
-    wrap.insertBefore(objDiv, foot || null);
+    const pfDiv = document.getElementById('portfolio-strip');
+    wrap.insertBefore(pfDiv, period);
 
-    const toggle = document.createElement('button');
-    toggle.id = 'tab-objectives';
-    toggle.className = 'obj-toggle';
-    toggle.textContent = 'Objectives';
-    criteriaBtn.parentNode.insertBefore(toggle, criteriaBtn);
-
-    toggle.addEventListener('click', function(){
-      const showing = objDiv.style.display === 'block';
-      if(showing){
-        objDiv.style.display = 'none'; toggle.classList.remove('active');
-        app.style.display = '';
-      } else {
-        objDiv.style.display = 'block'; toggle.classList.add('active');
-        app.style.display = 'none';
-        renderObjectives();
+    sw.addEventListener('click', function(e){
+      if(e.target && e.target.tagName === 'BUTTON'){
+        setTimeout(function(){ renderObjectiveSection(e.target.dataset.v); }, 0);
       }
     });
 
-    const sw = document.getElementById('switch');
-    if(sw){
-      sw.addEventListener('click', function(e){
-        if(e.target && e.target.tagName === 'BUTTON'){
-          objDiv.style.display = 'none'; toggle.classList.remove('active');
-          app.style.display = '';
+    (async function load(){
+      try{
+        if(!window.DATA){
+          const r = await fetch('leads_data.json', {cache:'no-store'});
+          window.DATA = await r.json();
         }
-      });
-    }
-
-    (async function loadTargetsIfNeeded(){
-      if(!window.TARGETS){
-        try{
-          const r = await fetch('targets.json', {cache:'no-store'});
-          if(r.ok) window.TARGETS = await r.json();
-        }catch(e){}
+        const tr = await fetch('targets.json', {cache:'no-store'});
+        window.TARGETS = await tr.json();
+        correctAllSqm();
+        refreshAll();
+      }catch(e){
+        const root = document.getElementById('objectives');
+        if(root) root.textContent = 'Could not load objectives data.';
       }
     })();
   }
