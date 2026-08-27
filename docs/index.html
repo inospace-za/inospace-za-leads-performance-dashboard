@@ -131,42 +131,6 @@
   <div id="app"><div class="loading">Loading dashboard…</div></div>
   <div class="foot" id="foot"></div>
 </div>
-<script id="sqm-interceptor">
-(function(){
-  var _fetch = window.fetch;
-  window.fetch = function(url, opts){
-    if(typeof url === 'string' && url.indexOf('leads_data.json') !== -1){
-      return _fetch(url, opts).then(function(resp){
-        return resp.json().then(function(data){
-          return _fetch('targets.json', {cache:'no-store'}).then(function(tr){
-            return tr.json().then(function(targets){
-              window.TARGETS = targets;
-              try {
-                Object.keys(data.sites||{}).forEach(function(sid){
-                  var site = data.sites[sid];
-                  var t = targets.sites && targets.sites[sid];
-                  if(!site || !t || !t.total_sqm || !t.rentable_sqm) return;
-                  function corr(entry){
-                    if(!entry || entry.occupancy_sqm_pct == null || entry.__sqmCorrected) return;
-                    var occSqm = entry.occupancy_sqm_pct * t.total_sqm;
-                    entry.occupancy_sqm_pct = Math.round((occSqm / t.rentable_sqm)*1000)/1000;
-                    entry.__sqmCorrected = true;
-                  }
-                  corr(site.current_month);
-                  (site.monthly_history||[]).forEach(corr);
-                });
-              } catch(e){}
-              window.DATA = data;
-              return new Response(JSON.stringify(data), {status:resp.status, headers:resp.headers});
-            });
-          });
-        });
-      });
-    }
-    return _fetch(url, opts);
-  };
-})();
-</script>
 <script>
 let DATA = null;
 let ACTIVE_SITE = null;
@@ -411,6 +375,8 @@ load();
 (function(){
   const SITE_IDS = ['56788','58700','58995'];
   const SHORT_NAME = {'56788':'Maitland','58700':'Salt River','58995':'CBD'};
+  let RAW_DATA = null;   // our OWN independent fetch, never mutated, never shared with the original script
+  let TARGETS = null;
 
   function fmtR(n){ return 'R'+Math.round(n).toLocaleString('en-ZA'); }
   function monthKey(dstr){ return (dstr||'').slice(0,7); }
@@ -420,34 +386,20 @@ load();
     return y+'-'+String(m).padStart(2,'0');
   }
 
-  // Single source of truth for the rentable-corrected sqm occupancy figure.
-  // Applied to current_month AND every monthly_history row, so the same
-  // metric never shows two different numbers on the same page again.
-  function correctedSqmPct(entry, t){
-    if(!entry || entry.occupancy_sqm_pct == null || !t || !t.total_sqm || !t.rentable_sqm) return entry ? entry.occupancy_sqm_pct : null;
-    const occupiedSqm = entry.occupancy_sqm_pct * t.total_sqm;
+  // Correct sqm occupancy from a RAW (uncorrected) percentage. Pure function,
+  // no mutation, no shared state - call it fresh every time you need a number.
+  function correctedSqmPct(rawPct, t){
+    if(rawPct == null || !t || !t.total_sqm || !t.rentable_sqm) return rawPct;
+    const occupiedSqm = rawPct * t.total_sqm;
     return Math.round((occupiedSqm / t.rentable_sqm) * 1000) / 1000;
   }
 
-  function correctAllSqm(){
-    if(!window.DATA || !window.TARGETS) return;
-    SITE_IDS.forEach(function(sid){
-      const site = window.DATA.sites[sid];
-      const t = window.TARGETS.sites[sid];
-      if(!site || !t) return;
-      if(site.current_month) site.current_month.occupancy_sqm_pct = correctedSqmPct(site.current_month, t);
-      (site.monthly_history||[]).forEach(function(row){
-        row.occupancy_sqm_pct = correctedSqmPct(row, t);
-      });
-    });
-  }
-
   function siteSnapshot(sid){
-    const s = window.DATA && window.DATA.sites[sid];
-    const t = window.TARGETS && window.TARGETS.sites[sid];
+    const s = RAW_DATA && RAW_DATA.sites[sid];
+    const t = TARGETS && TARGETS.sites[sid];
     if(!s || !t) return null;
     const cm = s.current_month;
-    const curM = monthKey(window.DATA.run_date);
+    const curM = monthKey(RAW_DATA.run_date);
     const nextM = nextMonthKey(curM);
     const occUnitsRentable = Math.round((cm.occupancy_units_pct||0) * t.rentable_units_current);
     const curTarget = t.monthly[curM];
@@ -460,7 +412,8 @@ load();
     const unitsStillNeeded = (curTarget && gap != null) ? Math.max(0, curTarget.occ_units_target - occUnitsRentable) : null;
     const moveInsPerLead = (cm.leads > 0 && cm.move_ins > 0) ? (cm.move_ins / cm.leads) : null;
     const leadsNeeded = (unitsStillNeeded != null && unitsStillNeeded > 0 && moveInsPerLead) ? Math.ceil(unitsStillNeeded / moveInsPerLead) : null;
-    return { s, t, cm, curM, nextM, occUnitsRentable, curTarget, nextTarget, gap, blendedPct, revActual, revTarget, revGap, unitsStillNeeded, moveInsPerLead, leadsNeeded };
+    const sqmPctCorrected = correctedSqmPct(cm.occupancy_sqm_pct, t);
+    return { s, t, cm, curM, nextM, occUnitsRentable, curTarget, nextTarget, gap, blendedPct, revActual, revTarget, revGap, unitsStillNeeded, moveInsPerLead, leadsNeeded, sqmPctCorrected };
   }
 
   function switchToSite(sid){
@@ -523,6 +476,49 @@ load();
     root.innerHTML = html;
   }
 
+  // Directly patch the ORIGINAL script's rendered DOM for the sqm figure - this
+  // never touches the original script's internal data/state, only the text that
+  // ends up on screen, so it is immune to whatever internal quirks that script has.
+  function patchSqmInDom(){
+    if(!RAW_DATA || !TARGETS) return;
+    const sid = currentActiveSite();
+    const snap = siteSnapshot(sid);
+    if(!snap || snap.sqmPctCorrected == null) return;
+    const pctText = (snap.sqmPctCorrected*100).toFixed(1)+'%';
+
+    // top tile
+    document.querySelectorAll('#app .tile').forEach(function(tile){
+      const lab = tile.querySelector('.lab');
+      if(lab && lab.textContent.trim() === 'Occupancy % (sqm)'){
+        const val = tile.querySelector('.val');
+        if(val && val.textContent !== pctText) val.textContent = pctText;
+      }
+    });
+
+    // history table - find the sqm column index, then patch each row using
+    // that row's OWN month if we have a target for it, else leave as-is
+    const table = document.querySelector('#app table');
+    if(!table) return;
+    const headers = Array.from(table.querySelectorAll('th')).map(function(th){ return th.textContent.trim().replace('↓','').replace('↕','').trim(); });
+    const sqmColIdx = headers.indexOf('Occupancy % (sqm)');
+    const monthColIdx = headers.indexOf('Month');
+    if(sqmColIdx === -1) return;
+    Array.from(table.querySelectorAll('tbody tr')).forEach(function(row){
+      const cells = row.children;
+      const cell = cells[sqmColIdx];
+      if(!cell || cell.dataset.sqmCorrected === '1') return;
+      const rawPct = parseFloat(cell.dataset.sqmRaw != null ? cell.dataset.sqmRaw : cell.textContent) / 100;
+      if(isNaN(rawPct)) return;
+      cell.dataset.sqmRaw = String(rawPct*100);
+      const corrected = correctedSqmPct(rawPct, snap.t);
+      if(corrected != null){
+        const newText = (corrected*100).toFixed(1)+'%';
+        if(cell.textContent !== newText) cell.textContent = newText;
+        cell.dataset.sqmCorrected = '1';
+      }
+    });
+  }
+
   function currentActiveSite(){
     const active = document.querySelector('#switch button.active');
     return active ? active.dataset.v : SITE_IDS[0];
@@ -531,28 +527,51 @@ load();
   function refreshAll(){
     renderPortfolioStrip();
     renderObjectiveSection(currentActiveSite());
+    patchSqmInDom();
   }
 
   function init(){
     const wrap = document.querySelector('.wrap');
     const period = document.getElementById('period');
     const sw = document.getElementById('switch');
-    if(!wrap || !period || !sw){ setTimeout(init, 100); return; }
+    const app = document.getElementById('app');
+    if(!wrap || !period || !sw || !app){ setTimeout(init, 100); return; }
 
     const pfDiv = document.getElementById('portfolio-strip');
     wrap.insertBefore(pfDiv, period);
 
     sw.addEventListener('click', function(e){
       if(e.target && e.target.tagName === 'BUTTON'){
-        setTimeout(function(){ renderObjectiveSection(e.target.dataset.v); }, 0);
+        setTimeout(function(){ renderObjectiveSection(e.target.dataset.v); patchSqmInDom(); }, 0);
       }
     });
 
-    (function waitForData(){
-      if(window.DATA && window.TARGETS){ refreshAll(); return; }
-      setTimeout(waitForData, 50);
+    // Re-patch whenever the original script redraws #app for any reason
+    // (sorting the history table, etc.) - this is what makes DOM-patching
+    // robust regardless of how/when the original script re-renders.
+    let patchTimer = null;
+    const mo = new MutationObserver(function(){
+      mo.disconnect();
+      clearTimeout(patchTimer);
+      patchTimer = setTimeout(function(){
+        patchSqmInDom();
+        mo.observe(app, {childList:true, subtree:true});
+      }, 30);
+    });
+    mo.observe(app, {childList:true, subtree:true});
+
+    (async function load(){
+      try{
+        const r = await fetch('leads_data.json', {cache:'no-store'});
+        RAW_DATA = await r.json();
+        const tr = await fetch('targets.json', {cache:'no-store'});
+        TARGETS = await tr.json();
+        refreshAll();
+      }catch(e){
+        const root = document.getElementById('objectives');
+        if(root) root.textContent = 'Could not load objectives data.';
+      }
     })();
-    
   }
 
   if(document.readyState === 'loading'){
