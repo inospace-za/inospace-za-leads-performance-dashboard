@@ -1,10 +1,10 @@
 {
   "56788": {
     "2026-08": {
-      "leads": 13,
+      "leads": 14,
       "genuine_enquiries": 0,
       "conversions": 2,
-      "conversion_rate": 0.154,
+      "conversion_rate": 0.14300000000000002,
       "move_ins": 2,
       "move_outs": 1,
       "occupancy_sqm_pct": 0.5670000000000001,
@@ -27,15 +27,15 @@
   },
   "58995": {
     "2026-08": {
-      "leads": 64,
-      "genuine_enquiries": 7,
-      "conversions": 13,
-      "conversion_rate": 0.203,
-      "move_ins": 13,
+      "leads": 66,
+      "genuine_enquiries": 9,
+      "conversions": 14,
+      "conversion_rate": 0.212,
+      "move_ins": 14,
       "move_outs": 0,
-      "occupancy_sqm_pct": 0.053,
-      "occupancy_units_pct": 0.084,
-      "revenue_actual": 27606.05
+      "occupancy_sqm_pct": 0.057,
+      "occupancy_units_pct": 0.09,
+      "revenue_actual": 29692.14
     }
   }
 }
