@@ -359,9 +359,6 @@ load();
 .obj-chip{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle}
 .obj-chip.good{background:rgba(47,158,68,.12);color:var(--good)}
 .obj-chip.bad{background:rgba(232,119,12,.14);color:var(--amber)}
-.obj-note{background:var(--chip,#f2f4f7);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ink);margin-top:4px}
-.obj-note.warn{background:rgba(232,119,12,.08)}
-.obj-section-lab{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:18px 0 8px}
 .pf-grid{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0 4px}
 .pf-card{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;cursor:pointer;transition:transform .1s}
 .pf-card:hover{transform:translateY(-1px)}
@@ -370,12 +367,11 @@ load();
 .pf-card .sub{font-size:12px;color:var(--muted);margin-top:2px}
 </style>
 <div id="portfolio-strip"></div>
-<div id="objectives"></div>
 <script>
 (function(){
   const SITE_IDS = ['56788','58700','58995'];
   const SHORT_NAME = {'56788':'Maitland','58700':'Salt River','58995':'CBD'};
-  let RAW_DATA = null;   // our OWN independent fetch, never mutated, never shared with the original script
+  let RAW_DATA = null;
   let TARGETS = null;
 
   function fmtR(n){ return 'R'+Math.round(n).toLocaleString('en-ZA'); }
@@ -386,8 +382,6 @@ load();
     return y+'-'+String(m).padStart(2,'0');
   }
 
-  // Correct sqm occupancy from a RAW (uncorrected) percentage. Pure function,
-  // no mutation, no shared state - call it fresh every time you need a number.
   function correctedSqmPct(rawPct, t){
     if(rawPct == null || !t || !t.total_sqm || !t.rentable_sqm) return rawPct;
     const occupiedSqm = rawPct * t.total_sqm;
@@ -400,10 +394,8 @@ load();
     if(!s || !t) return null;
     const cm = s.current_month;
     const curM = monthKey(RAW_DATA.run_date);
-    const nextM = nextMonthKey(curM);
     const occUnitsRentable = Math.round((cm.occupancy_units_pct||0) * t.rentable_units_current);
     const curTarget = t.monthly[curM];
-    const nextTarget = t.monthly[nextM];
     const gap = curTarget ? (occUnitsRentable - curTarget.occ_units_target) : null;
     const blendedPct = ((occUnitsRentable/t.total_physical_units)*100);
     const revActual = cm.revenue_actual;
@@ -412,8 +404,7 @@ load();
     const unitsStillNeeded = (curTarget && gap != null) ? Math.max(0, curTarget.occ_units_target - occUnitsRentable) : null;
     const moveInsPerLead = (cm.leads > 0 && cm.move_ins > 0) ? (cm.move_ins / cm.leads) : null;
     const leadsNeeded = (unitsStillNeeded != null && unitsStillNeeded > 0 && moveInsPerLead) ? Math.ceil(unitsStillNeeded / moveInsPerLead) : null;
-    const sqmPctCorrected = correctedSqmPct(cm.occupancy_sqm_pct, t);
-    return { s, t, cm, curM, nextM, occUnitsRentable, curTarget, nextTarget, gap, blendedPct, revActual, revTarget, revGap, unitsStillNeeded, moveInsPerLead, leadsNeeded, sqmPctCorrected };
+    return { s, t, cm, curM, occUnitsRentable, curTarget, gap, blendedPct, revActual, revTarget, revGap, unitsStillNeeded, leadsNeeded };
   }
 
   function switchToSite(sid){
@@ -443,80 +434,63 @@ load();
     });
   }
 
-  function renderObjectiveSection(sid){
-    const root = document.getElementById('objectives');
-    if(!root) return;
-    const snap = siteSnapshot(sid);
-    if(!snap){ root.innerHTML = ''; return; }
-    const t = snap.t, cm = snap.cm, curTarget = snap.curTarget, nextTarget = snap.nextTarget;
-    const statusCls = (snap.gap===null) ? '' : (snap.gap>=0?'good':'bad');
-    const revStatusCls = (snap.revGap===null) ? '' : (snap.revGap>=0?'good':'bad');
-
-    let leadsNote;
-    if(snap.unitsStillNeeded === 0) leadsNote = 'Target already met for '+snap.curM+'.';
-    else if(snap.leadsNeeded != null) leadsNote = '~'+snap.leadsNeeded+' more leads needed this month at the current move-in rate ('+cm.move_ins+' move-ins from '+cm.leads+' leads).';
-    else leadsNote = 'Not enough leads/move-ins data yet this month to estimate.';
-
-    let html = '<div class="obj-section-lab">Objective — '+t.name+'</div>';
-    html += '<div class="panel">';
-    html += '<div class="tiles">';
-    html += '<div class="tile '+statusCls+'"><div class="lab">Occupancy Objective</div><div class="val">'+snap.blendedPct.toFixed(1)+'%</div><div class="sub">target '+(curTarget?curTarget.occ_units_target:'—')+' units · static goal</div></div>';
-    if(snap.revActual != null){
-      html += '<div class="tile '+revStatusCls+'"><div class="lab">Revenue Objective</div><div class="val">'+(snap.revGap!=null?((snap.revGap>=0?'+':'−')+fmtR(Math.abs(snap.revGap))):'—')+'</div><div class="sub">'+fmtR(snap.revActual)+' of '+(snap.revTarget!=null?fmtR(snap.revTarget):'—')+' target</div></div>';
-    }
-    html += '<div class="tile"><div class="lab">Leads still needed</div><div class="val">'+(snap.leadsNeeded!=null?snap.leadsNeeded:(snap.unitsStillNeeded===0?'0':'—'))+'</div><div class="sub">to hit '+snap.curM+' target</div></div>';
-    if(nextTarget){
-      html += '<div class="tile"><div class="lab">'+snap.nextM+' target</div><div class="val">'+nextTarget.occ_units_target+' units</div></div>';
-    }
-    html += '</div>';
-    html += '<div class="obj-note">'+leadsNote+'</div>';
-    html += '<div class="obj-note"><b>'+t.quarter_label+'</b> revenue target: '+fmtR(t.quarter_rev_target)+'. FY target by '+t.fy_end+': '+t.fy_end_target.occ_units_target+' units ('+t.fy_end_target.occ_pct_target+'%). '+(t.note?t.note:'')+'</div>';
-    html += '<div class="obj-note warn">Move-ins are as reported by Sitelink at run time — future-dated move-ins are not counted until their date arrives.</div>';
-    html += '</div>';
-    root.innerHTML = html;
-  }
-
-  // Directly patch the ORIGINAL script's rendered DOM for the sqm figure - this
-  // never touches the original script's internal data/state, only the text that
-  // ends up on screen, so it is immune to whatever internal quirks that script has.
-  function patchSqmInDom(){
+  // Everything below folds actual-vs-target straight into the existing tiles
+  // instead of a separate panel: sqm gets corrected, the target tile gets a
+  // gap sub-line, and Revenue / Leads-needed are added as two more tiles in
+  // the SAME grid. No second section, no duplicate framing.
+  function patchTiles(){
     if(!RAW_DATA || !TARGETS) return;
     const sid = currentActiveSite();
     const snap = siteSnapshot(sid);
-    if(!snap || snap.sqmPctCorrected == null) return;
-    const pctText = (snap.sqmPctCorrected*100).toFixed(1)+'%';
+    if(!snap) return;
 
-    // top tile
+    const tilesContainer = document.querySelector('#app .tiles');
+    if(!tilesContainer) return;
+
     document.querySelectorAll('#app .tile').forEach(function(tile){
       const lab = tile.querySelector('.lab');
-      if(lab && lab.textContent.trim() === 'Occupancy % (sqm)'){
+      if(!lab) return;
+      const labText = lab.textContent.trim();
+
+      if(labText === 'Occupancy % (sqm)' && snap.sqmPctCorrected == null){
         const val = tile.querySelector('.val');
-        if(val && val.textContent !== pctText) val.textContent = pctText;
+        const corrected = correctedSqmPct(snap.cm.occupancy_sqm_pct, snap.t);
+        if(val && corrected != null){
+          const pctText = (corrected*100).toFixed(1)+'%';
+          if(val.textContent !== pctText) val.textContent = pctText;
+        }
+      }
+
+      if(labText === 'Monthly Target (units)' && snap.gap != null){
+        const cls = snap.gap>=0 ? 'g' : 'a';
+        if(!tile.classList.contains('g') && !tile.classList.contains('a')) tile.classList.add(cls);
+        let sub = tile.querySelector('.sub');
+        const subText = snap.gap>=0 ? ('+'+snap.gap+' ahead') : ((-snap.gap)+' short');
+        if(!sub){ sub=document.createElement('div'); sub.className='sub'; tile.appendChild(sub); }
+        if(sub.textContent !== subText) sub.textContent = subText;
       }
     });
 
-    // history table - find the sqm column index, then patch each row using
-    // that row's OWN month if we have a target for it, else leave as-is
-    const table = document.querySelector('#app table');
-    if(!table) return;
-    const headers = Array.from(table.querySelectorAll('th')).map(function(th){ return th.textContent.trim().replace('↓','').replace('↕','').trim(); });
-    const sqmColIdx = headers.indexOf('Occupancy % (sqm)');
-    const monthColIdx = headers.indexOf('Month');
-    if(sqmColIdx === -1) return;
-    Array.from(table.querySelectorAll('tbody tr')).forEach(function(row){
-      const cells = row.children;
-      const cell = cells[sqmColIdx];
-      if(!cell || cell.dataset.sqmCorrected === '1') return;
-      const rawPct = parseFloat(cell.dataset.sqmRaw != null ? cell.dataset.sqmRaw : cell.textContent) / 100;
-      if(isNaN(rawPct)) return;
-      cell.dataset.sqmRaw = String(rawPct*100);
-      const corrected = correctedSqmPct(rawPct, snap.t);
-      if(corrected != null){
-        const newText = (corrected*100).toFixed(1)+'%';
-        if(cell.textContent !== newText) cell.textContent = newText;
-        cell.dataset.sqmCorrected = '1';
-      }
-    });
+    if(snap.revActual != null && !tilesContainer.querySelector('[data-injected="revenue"]')){
+      const cls = snap.revGap==null ? '' : (snap.revGap>=0?'g':'a');
+      const div = document.createElement('div');
+      div.className = 'tile'+(cls?(' '+cls):'');
+      div.setAttribute('data-injected','revenue');
+      div.innerHTML = '<div class="lab">Revenue</div><div class="val">'+fmtR(snap.revActual)+'</div><div class="sub">'+(snap.revTarget!=null?('target '+fmtR(snap.revTarget)):'')+'</div>';
+      tilesContainer.appendChild(div);
+    }
+
+    if(!tilesContainer.querySelector('[data-injected="leadsneeded"]')){
+      let val, sub;
+      if(snap.unitsStillNeeded === 0){ val='0'; sub='target already met'; }
+      else if(snap.leadsNeeded != null){ val=String(snap.leadsNeeded); sub='at this month\'s pace'; }
+      else { val='—'; sub='not enough data yet'; }
+      const div = document.createElement('div');
+      div.className = 'tile';
+      div.setAttribute('data-injected','leadsneeded');
+      div.innerHTML = '<div class="lab">Leads still needed</div><div class="val">'+val+'</div><div class="sub">'+sub+'</div>';
+      tilesContainer.appendChild(div);
+    }
   }
 
   function currentActiveSite(){
@@ -526,8 +500,7 @@ load();
 
   function refreshAll(){
     renderPortfolioStrip();
-    renderObjectiveSection(currentActiveSite());
-    patchSqmInDom();
+    patchTiles();
   }
 
   function init(){
@@ -542,19 +515,16 @@ load();
 
     sw.addEventListener('click', function(e){
       if(e.target && e.target.tagName === 'BUTTON'){
-        setTimeout(function(){ renderObjectiveSection(e.target.dataset.v); patchSqmInDom(); }, 0);
+        setTimeout(patchTiles, 0);
       }
     });
 
-    // Re-patch whenever the original script redraws #app for any reason
-    // (sorting the history table, etc.) - this is what makes DOM-patching
-    // robust regardless of how/when the original script re-renders.
     let patchTimer = null;
     const mo = new MutationObserver(function(){
       mo.disconnect();
       clearTimeout(patchTimer);
       patchTimer = setTimeout(function(){
-        patchSqmInDom();
+        patchTiles();
         mo.observe(app, {childList:true, subtree:true});
       }, 30);
     });
@@ -567,10 +537,7 @@ load();
         const tr = await fetch('targets.json', {cache:'no-store'});
         TARGETS = await tr.json();
         refreshAll();
-      }catch(e){
-        const root = document.getElementById('objectives');
-        if(root) root.textContent = 'Could not load objectives data.';
-      }
+      }catch(e){}
     })();
   }
 
