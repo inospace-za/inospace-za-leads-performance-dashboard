@@ -15,7 +15,7 @@
   "58700": {
     "2026-08": {
       "leads": 15,
-      "genuine_enquiries": 7,
+      "genuine_enquiries": 6,
       "conversions": 3,
       "conversion_rate": 0.2,
       "move_ins": 3,
@@ -27,10 +27,10 @@
   },
   "58995": {
     "2026-08": {
-      "leads": 66,
-      "genuine_enquiries": 9,
+      "leads": 68,
+      "genuine_enquiries": 8,
       "conversions": 14,
-      "conversion_rate": 0.212,
+      "conversion_rate": 0.20600000000000002,
       "move_ins": 14,
       "move_outs": 0,
       "occupancy_sqm_pct": 0.057,
