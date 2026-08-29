@@ -6,18 +6,18 @@
       "conversions": 2,
       "conversion_rate": 0.14300000000000002,
       "move_ins": 2,
-      "move_outs": 1,
-      "occupancy_sqm_pct": 0.5670000000000001,
-      "occupancy_units_pct": 0.973,
-      "revenue_actual": 291614.72
+      "move_outs": 2,
+      "occupancy_sqm_pct": 0.562,
+      "occupancy_units_pct": 0.9640000000000001,
+      "revenue_actual": 289093.85
     }
   },
   "58700": {
     "2026-08": {
-      "leads": 15,
+      "leads": 16,
       "genuine_enquiries": 6,
       "conversions": 3,
-      "conversion_rate": 0.2,
+      "conversion_rate": 0.188,
       "move_ins": 3,
       "move_outs": 2,
       "occupancy_sqm_pct": 0.516,
@@ -27,10 +27,10 @@
   },
   "58995": {
     "2026-08": {
-      "leads": 68,
-      "genuine_enquiries": 8,
+      "leads": 70,
+      "genuine_enquiries": 10,
       "conversions": 14,
-      "conversion_rate": 0.20600000000000002,
+      "conversion_rate": 0.2,
       "move_ins": 14,
       "move_outs": 0,
       "occupancy_sqm_pct": 0.057,
