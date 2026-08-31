@@ -1,7 +1,7 @@
 {
   "generated_note": "Built by leads-performance-dashboard/etl/build_leads_view.py",
-  "generated_at": "2026-08-30T10:28:25",
-  "run_date": "2026-08-30",
+  "generated_at": "2026-08-31T11:34:41",
+  "run_date": "2026-08-31",
   "sites": {
     "56788": {
       "name": "Maitland",
@@ -52,10 +52,10 @@
       "name": "Salt River",
       "site_code": "58700",
       "current_month": {
-        "leads": 16,
-        "genuine_enquiries": 6,
+        "leads": 17,
+        "genuine_enquiries": 7,
         "conversions": 3,
-        "conversion_rate": 0.188,
+        "conversion_rate": 0.17600000000000002,
         "move_ins": 3,
         "move_outs": 2,
         "occupancy_sqm_pct": 0.516,
@@ -72,10 +72,10 @@
       },
       "monthly_history": [
         {
-          "leads": 16,
-          "genuine_enquiries": 6,
+          "leads": 17,
+          "genuine_enquiries": 7,
           "conversions": 3,
-          "conversion_rate": 0.188,
+          "conversion_rate": 0.17600000000000002,
           "move_ins": 3,
           "move_outs": 2,
           "occupancy_sqm_pct": 0.516,
