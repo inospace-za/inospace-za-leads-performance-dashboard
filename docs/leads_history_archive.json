@@ -10,6 +10,17 @@
       "occupancy_sqm_pct": 0.562,
       "occupancy_units_pct": 0.9640000000000001,
       "revenue_actual": 289093.85
+    },
+    "2026-09": {
+      "leads": 16,
+      "genuine_enquiries": 0,
+      "conversions": 6,
+      "conversion_rate": 0.375,
+      "move_ins": 6,
+      "move_outs": 7,
+      "occupancy_sqm_pct": 0.5589999999999999,
+      "occupancy_units_pct": 0.955,
+      "revenue_actual": 287924.56
     }
   },
   "58700": {
@@ -23,6 +34,17 @@
       "occupancy_sqm_pct": 0.516,
       "occupancy_units_pct": 0.87,
       "revenue_actual": 103660.92
+    },
+    "2026-09": {
+      "leads": 18,
+      "genuine_enquiries": 7,
+      "conversions": 3,
+      "conversion_rate": 0.16699999999999998,
+      "move_ins": 3,
+      "move_outs": 4,
+      "occupancy_sqm_pct": 0.5,
+      "occupancy_units_pct": 0.826,
+      "revenue_actual": 100488.74
     }
   },
   "58995": {
@@ -36,6 +58,17 @@
       "occupancy_sqm_pct": 0.057,
       "occupancy_units_pct": 0.09,
       "revenue_actual": 29692.14
+    },
+    "2026-09": {
+      "leads": 82,
+      "genuine_enquiries": 10,
+      "conversions": 17,
+      "conversion_rate": 0.207,
+      "move_ins": 17,
+      "move_outs": 0,
+      "occupancy_sqm_pct": 0.07200000000000001,
+      "occupancy_units_pct": 0.11,
+      "revenue_actual": 37341.7
     }
   }
 }
