@@ -12,15 +12,15 @@
       "revenue_actual": 289093.85
     },
     "2026-09": {
-      "leads": 16,
+      "leads": 3,
       "genuine_enquiries": 0,
-      "conversions": 6,
-      "conversion_rate": 0.375,
-      "move_ins": 6,
-      "move_outs": 7,
-      "occupancy_sqm_pct": 0.5589999999999999,
-      "occupancy_units_pct": 0.955,
-      "revenue_actual": 287924.56
+      "conversions": 0,
+      "conversion_rate": 0.0,
+      "move_ins": 0,
+      "move_outs": 0,
+      "occupancy_sqm_pct": 0.563,
+      "occupancy_units_pct": 0.945,
+      "revenue_actual": 287325.1
     }
   },
   "58700": {
@@ -36,15 +36,15 @@
       "revenue_actual": 103660.92
     },
     "2026-09": {
-      "leads": 18,
-      "genuine_enquiries": 7,
-      "conversions": 3,
-      "conversion_rate": 0.16699999999999998,
-      "move_ins": 3,
-      "move_outs": 4,
-      "occupancy_sqm_pct": 0.5,
-      "occupancy_units_pct": 0.826,
-      "revenue_actual": 100488.74
+      "leads": 1,
+      "genuine_enquiries": 0,
+      "conversions": 1,
+      "conversion_rate": 1.0,
+      "move_ins": 1,
+      "move_outs": 0,
+      "occupancy_sqm_pct": 0.466,
+      "occupancy_units_pct": 0.804,
+      "revenue_actual": 95359.18
     }
   },
   "58995": {
@@ -60,15 +60,15 @@
       "revenue_actual": 29692.14
     },
     "2026-09": {
-      "leads": 82,
-      "genuine_enquiries": 10,
-      "conversions": 17,
-      "conversion_rate": 0.207,
-      "move_ins": 17,
+      "leads": 6,
+      "genuine_enquiries": 2,
+      "conversions": 4,
+      "conversion_rate": 0.667,
+      "move_ins": 4,
       "move_outs": 0,
-      "occupancy_sqm_pct": 0.07200000000000001,
-      "occupancy_units_pct": 0.11,
-      "revenue_actual": 37341.7
+      "occupancy_sqm_pct": 0.083,
+      "occupancy_units_pct": 0.135,
+      "revenue_actual": 44207.77
     }
   }
 }
