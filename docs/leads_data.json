@@ -1,20 +1,20 @@
 {
   "generated_note": "Built by leads-performance-dashboard/etl/build_leads_view.py",
-  "generated_at": "2026-09-03T09:45:37",
-  "run_date": "2026-09-03",
+  "generated_at": "2026-09-04T09:36:35",
+  "run_date": "2026-09-04",
   "sites": {
     "56788": {
       "name": "Maitland",
       "site_code": "56788",
       "current_month": {
-        "leads": 8,
+        "leads": 14,
         "genuine_enquiries": 4,
         "conversions": 0,
         "conversion_rate": 0.0,
         "move_ins": 0,
         "move_outs": 0,
         "occupancy_sqm_pct": 0.563,
-        "occupancy_units_pct": 0.44799999999999995,
+        "occupancy_units_pct": 0.45799999999999996,
         "revenue_actual": 287325.1,
         "bands": {
           "genuine_enquiries": "Concerning - insufficient demand generation",
@@ -47,14 +47,14 @@
           }
         },
         {
-          "leads": 8,
+          "leads": 14,
           "genuine_enquiries": 4,
           "conversions": 0,
           "conversion_rate": 0.0,
           "move_ins": 0,
           "move_outs": 0,
           "occupancy_sqm_pct": 0.563,
-          "occupancy_units_pct": 0.44799999999999995,
+          "occupancy_units_pct": 0.45799999999999996,
           "revenue_actual": 287325.1,
           "month": "2026-09",
           "source": "live_current_month",
@@ -72,10 +72,10 @@
       "name": "Salt River",
       "site_code": "58700",
       "current_month": {
-        "leads": 2,
-        "genuine_enquiries": 1,
+        "leads": 3,
+        "genuine_enquiries": 3,
         "conversions": 2,
-        "conversion_rate": 1.0,
+        "conversion_rate": 0.667,
         "move_ins": 2,
         "move_outs": 0,
         "occupancy_sqm_pct": 0.46799999999999997,
@@ -112,10 +112,10 @@
           }
         },
         {
-          "leads": 2,
-          "genuine_enquiries": 1,
+          "leads": 3,
+          "genuine_enquiries": 3,
           "conversions": 2,
-          "conversion_rate": 1.0,
+          "conversion_rate": 0.667,
           "move_ins": 2,
           "move_outs": 0,
           "occupancy_sqm_pct": 0.46799999999999997,
@@ -137,10 +137,10 @@
       "name": "CBD - The Exchange",
       "site_code": "58995",
       "current_month": {
-        "leads": 7,
-        "genuine_enquiries": 1,
+        "leads": 8,
+        "genuine_enquiries": 0,
         "conversions": 4,
-        "conversion_rate": 0.5710000000000001,
+        "conversion_rate": 0.5,
         "move_ins": 4,
         "move_outs": 0,
         "occupancy_sqm_pct": 0.081,
@@ -177,10 +177,10 @@
           }
         },
         {
-          "leads": 7,
-          "genuine_enquiries": 1,
+          "leads": 8,
+          "genuine_enquiries": 0,
           "conversions": 4,
-          "conversion_rate": 0.5710000000000001,
+          "conversion_rate": 0.5,
           "move_ins": 4,
           "move_outs": 0,
           "occupancy_sqm_pct": 0.081,
