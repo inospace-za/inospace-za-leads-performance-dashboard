@@ -12,8 +12,8 @@
       "revenue_actual": 289093.85
     },
     "2026-09": {
-      "leads": 14,
-      "genuine_enquiries": 4,
+      "leads": 15,
+      "genuine_enquiries": 3,
       "conversions": 0,
       "conversion_rate": 0.0,
       "move_ins": 0,
@@ -36,10 +36,10 @@
       "revenue_actual": 103660.92
     },
     "2026-09": {
-      "leads": 3,
+      "leads": 4,
       "genuine_enquiries": 3,
       "conversions": 2,
-      "conversion_rate": 0.667,
+      "conversion_rate": 0.5,
       "move_ins": 2,
       "move_outs": 0,
       "occupancy_sqm_pct": 0.46799999999999997,
@@ -60,15 +60,15 @@
       "revenue_actual": 29692.14
     },
     "2026-09": {
-      "leads": 8,
-      "genuine_enquiries": 0,
-      "conversions": 4,
+      "leads": 10,
+      "genuine_enquiries": 1,
+      "conversions": 5,
       "conversion_rate": 0.5,
-      "move_ins": 4,
+      "move_ins": 5,
       "move_outs": 0,
-      "occupancy_sqm_pct": 0.081,
-      "occupancy_units_pct": 0.129,
-      "revenue_actual": 42817.34
+      "occupancy_sqm_pct": 0.085,
+      "occupancy_units_pct": 0.135,
+      "revenue_actual": 44903.43
     }
   }
 }
